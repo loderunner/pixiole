@@ -1,5 +1,5 @@
 {
-  "name": "sorss",
+  "name": "pixiole",
   "version": "1.0.0",
   "private": true,
   "license": "AGPL-3.0-only",
@@ -16,6 +16,7 @@
   "packageManager": "pnpm@10.6.2",
   "dependencies": {
     "@fontsource-variable/inter": "5.2.5",
+    "@phosphor-icons/react": "2.1.8",
     "clsx": "2.1.1",
     "nanoid": "5.1.5",
     "next": "15.3.2",
