@@ -1,0 +1,50 @@
+{
+  "name": "sorss",
+  "version": "1.0.0",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "prettier --check . && next lint --max-warnings=0",
+    "test": "vitest"
+  },
+  "engines": {
+    "node": "^22.14"
+  },
+  "packageManager": "pnpm@10.6.2",
+  "dependencies": {
+    "@fontsource-variable/inter": "5.2.5",
+    "clsx": "2.1.1",
+    "nanoid": "5.1.5",
+    "next": "15.3.2",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "zod": "3.25.16"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "3.3.1",
+    "@eslint/js": "9.27.0",
+    "@next/env": "15.3.2",
+    "@next/eslint-plugin-next": "15.3.2",
+    "@svgr/webpack": "8.1.0",
+    "@tailwindcss/postcss": "4.1.7",
+    "@types/node": "22.15.21",
+    "@types/react": "19.1.4",
+    "@types/react-dom": "19.1.5",
+    "@typescript-eslint/parser": "8.32.1",
+    "eslint": "9.27.0",
+    "eslint-config-next": "15.3.2",
+    "eslint-config-prettier": "10.1.5",
+    "eslint-plugin-import": "2.31.0",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "5.2.0",
+    "postcss": "8.5.3",
+    "prettier": "3.5.3",
+    "prettier-plugin-tailwindcss": "0.6.11",
+    "tailwindcss": "4.1.7",
+    "typescript": "5.8.3",
+    "vercel": "42.1.1"
+  }
+}

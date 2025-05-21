@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "css": "tailwindcss"
+  },
+  "markdown.extension.toc.levels": "2..3",
+  "tailwindCSS.experimental.classRegex": ["clsx\\(.*?\\)(?!\\])"]
+}
