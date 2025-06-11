@@ -11,9 +11,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html>
-      <body className="flex h-svh w-svw flex-col">
-        {children}
-      </body>
+      <body className="flex h-dvh w-dvw flex-col">{children}</body>
     </html>
   );
 }
