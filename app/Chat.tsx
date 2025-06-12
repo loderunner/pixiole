@@ -103,7 +103,7 @@ export default function Chat({ initialMessage }: Props) {
         )}
       </div>
       <ChatArea
-        placeholder="Demande ce que tu veux à Pixiole ici"
+        placeholder="Demande ce que tu veux à Pixiole"
         value={input}
         onChange={handleInputChange}
         onSubmit={handleSubmit}
@@ -245,17 +245,4 @@ function parseMarkdownNumberedList(lines: string[], depth = 0): List {
   }
 
   return result;
-}
-function linkify(line: string) {
-  const match = line.match(/^(.*\.\s*)(.*)$/);
-  if (match === null) {
-    return line;
-  }
-  const [, head, rest] = match;
-  const slug = rest
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[àáâãäåæçèéêëìíîïñòóôõöøùúûüýÿßœ]/g, '');
-
-  return `${head}[${rest}](#${slug})`;
 }
