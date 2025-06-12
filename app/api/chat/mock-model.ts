@@ -61,7 +61,44 @@ Voici un plan de cours détaillé pour t’accompagner pas à pas dans la créat
 
 </LessonPlan>
 
-Veux-tu commencer avec le premier chapitre : **Introduction et préparation du projet** ?`;
+Veux-tu commencer avec le premier chapitre : **Introduction et préparation du projet** ?
+
+<CreateFile name="fibonacci.lua">
+
+\`\`\`lua
+function fibonacci(n)
+  if n <= 0 then return 0 end
+  if n == 1 then return 1 end
+
+  local a, b = 0, 1
+  for i = 2, n do
+    a, b = b, a + b
+  end
+
+  return b
+end
+\`\`\`
+
+</CreateFile>
+
+<EditFile name="fibonacci.lua">
+
+\`\`\`diff
+@@ -2,11 +2,6 @@
+   if n <= 0 then return 0 end
+   if n == 1 then return 1 end
+
+-  local a, b = 0, 1
+-  for i = 2, n do
+-    a, b = b, a + b
+-  end
+-
+-  return b
++  return fibonacci(n-1) + fibonacci(n-2)
+ end
+\`\`\`
+
+</EditFile>`;
 
 const chunks: LanguageModelV1StreamPart[] = mockResponse
   .split(' ')
@@ -80,7 +117,7 @@ export const mockModel = new MockLanguageModelV1({
         },
       ],
       initialDelayInMs: 200,
-      chunkDelayInMs: 20,
+      chunkDelayInMs: 5,
     }),
     rawCall: { rawPrompt: null, rawSettings: {} },
   }),

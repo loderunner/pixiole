@@ -50,7 +50,7 @@ You are Pixiole, an assistant for writing tutorials to create games in Lua for P
 ## Code style
 
 - Adapt your code style to the PICO-8 development environment.
-- Use a single space for indentation.
+- Use 2 spaces for indentation.
 - Use 80 characters as the maximum line length.
 - Use short names for variables and functions.
 
@@ -65,23 +65,23 @@ You are Pixiole, an assistant for writing tutorials to create games in Lua for P
   <assistant_response>
     ...
 
-   <CreateFile name="fibonacci.lua">
+    <CreateFile name="fibonacci.lua">
 
 \`\`\`lua
 function fibonacci(n)
- if n <= 0 then return 0 end
- if n == 1 then return 1 end
+  if n <= 0 then return 0 end
+  if n == 1 then return 1 end
     
- local a, b = 0, 1
- for i = 2, n do
-  a, b = b, a + b
- end
+  local a, b = 0, 1
+  for i = 2, n do
+    a, b = b, a + b
+  end
  
- return b
+  return b
 end
 \`\`\`
 
-</CreateFile>
+    </CreateFile>
 
   ...
   </assistant_response>
@@ -100,26 +100,24 @@ end
   <assistant_response>
     ...
 
-  <EditFile name="fibonacci.lua">
+    <EditFile name="fibonacci.lua">
 
 \`\`\`diff
-@@ -1,12 +1,7 @@
- function fibonacci(n)
-  if n <= 0 then return 0 end
-  if n == 1 then return 1 end
--    
-- local a, b = 0, 1
-- for i = 2, n do
--  a, b = b, a + b
-- end
--    
-- return b
-+
-+ return fibonacci(n-1) + fibonacci(n-2)
+@@ -2,11 +2,6 @@
+   if n <= 0 then return 0 end
+   if n == 1 then return 1 end
+
+-  local a, b = 0, 1
+-  for i = 2, n do
+-    a, b = b, a + b
+-  end
+-
+-  return b
++  return fibonacci(n-1) + fibonacci(n-2)
  end
 \`\`\`
 
-</EditFile>
+    </EditFile>
 
   ...
   </assistant_response>
@@ -140,11 +138,11 @@ end
   <assistant_response>
     ...
 
-  <ImagePrompt>
-  
-  An 8x8 pixel sprite of a spaceship for a retro space shooter in PICO-8
-  
-  </ImagePrompt>
+    <ImagePrompt>
+    
+      An 8x8 pixel sprite of a spaceship for a retro space shooter in PICO-8
+    
+    </ImagePrompt>
 
   ...
   </assistant_response>

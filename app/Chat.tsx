@@ -3,6 +3,7 @@
 import { Message, useChat } from '@ai-sdk/react';
 import { StudentIcon } from '@phosphor-icons/react';
 import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
+import { transformerNotationDiff } from '@shikijs/transformers';
 import { generateId } from 'ai';
 import throttle from 'lodash.throttle';
 import { useEffect, useMemo, useRef } from 'react';
@@ -11,6 +12,7 @@ import rehypeRaw from 'rehype-raw';
 import { createHighlighterCore, createOnigurumaEngine } from 'shiki';
 
 import ChatArea from '@/src/components/ChatArea';
+import { rehypeDiffPlugin } from '@/src/rehype-diff-plugin';
 
 type Props = {
   initialMessage: string;
@@ -32,7 +34,7 @@ function UserMessage({ message }: { message: Message }) {
 
 const highlighter = await createHighlighterCore({
   themes: [import('@shikijs/themes/nord')],
-  langs: [import('@shikijs/langs/lua'), import('@shikijs/langs/diff')],
+  langs: [import('@shikijs/langs/lua')],
   engine: createOnigurumaEngine(() => import('shiki/wasm')),
 });
 
@@ -46,7 +48,12 @@ function AssistantMessage({ message }: { message: Message }) {
         <MarkdownHooks
           rehypePlugins={[
             [rehypeRaw],
-            [rehypeShikiFromHighlighter, highlighter, { theme: 'nord' }],
+            [rehypeDiffPlugin],
+            [
+              rehypeShikiFromHighlighter,
+              highlighter,
+              { theme: 'nord', transformers: [transformerNotationDiff()] },
+            ],
           ]}
         >
           {message.content}

@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   });
 
   const result = streamText({
-    model: openai('gpt-4.1-mini'),
+    model: openai('gpt-4.1'),
     messages,
     maxTokens: 8192,
   });

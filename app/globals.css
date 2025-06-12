@@ -21,4 +21,14 @@
       }
     }
   }
+
+  .shiki.has-diff {
+    .line.diff.remove {
+      @apply bg-rose-500/40;
+    }
+
+    .line.diff.add {
+      @apply bg-green-500/40;
+    }
+  }
 }
