@@ -1,6 +1,6 @@
 'use client';
 
-import { Message, useChat } from '@ai-sdk/react';
+import { Message } from '@ai-sdk/react';
 import { StudentIcon } from '@phosphor-icons/react';
 import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
 import { transformerNotationDiff } from '@shikijs/transformers';
@@ -12,6 +12,7 @@ import rehypeRaw from 'rehype-raw';
 import { createHighlighterCore, createOnigurumaEngine } from 'shiki';
 
 import ChatArea from '@/src/components/ChatArea';
+import { useStreamChat } from '@/src/hooks/useStreamChat';
 import { rehypeDiffPlugin } from '@/src/rehype-diff-plugin';
 
 type Props = {
@@ -65,6 +66,18 @@ function AssistantMessage({ message }: { message: Message }) {
 
 const initialMessageId = generateId();
 
+// Tag handlers for this component
+const tagHandlers = {
+  Thinking: {
+    onOpen: (isComplete: boolean) => {
+      const thinkingText = isComplete ? 'Voir ma réflexion' : 'Je réfléchis...';
+      const className = isComplete ? '' : ' class="animate-pulse"';
+      return `<details><summary${className}>${thinkingText}</summary>`;
+    },
+    onClose: () => '</details>',
+  },
+};
+
 export default function Chat({ initialMessage }: Props) {
   const {
     messages: rawMessages,
@@ -73,11 +86,13 @@ export default function Chat({ initialMessage }: Props) {
     handleSubmit,
     reload,
     stop,
-  } = useChat({
+  } = useStreamChat({
     initialMessages: [
       { id: initialMessageId, content: initialMessage, role: 'user' },
     ],
+    tagHandlers,
   });
+
   const { messages } = useMemo(() => parseMessages(rawMessages), [rawMessages]);
 
   useEffect(() => {
@@ -93,7 +108,7 @@ export default function Chat({ initialMessage }: Props) {
         behavior: 'smooth',
       });
     }
-  }, [rawMessages]);
+  }, [messages]);
 
   return (
     <div className="mx-auto flex size-full max-w-3xl flex-col items-stretch py-8">
@@ -126,6 +141,7 @@ const scrollTo = throttle((element: HTMLElement, options: ScrollToOptions) => {
 function parseMessages(rawMessages: Message[]) {
   const messages: Message[] = [];
   let lessonPlan: List = [];
+
   for (const msg of rawMessages) {
     if (msg.role !== 'assistant') {
       messages.push(msg);
@@ -133,21 +149,6 @@ function parseMessages(rawMessages: Message[]) {
     }
 
     let content = msg.content;
-    let idx = content.indexOf('<Thinking>');
-    if (idx !== -1) {
-      idx = content.indexOf('</Thinking>');
-      const thinkingText = idx === -1 ? 'Je réfléchis...' : 'Voir ma réflexion';
-      const className = idx === -1 ? ' class="animate-pulse"' : '';
-      content = content.replace(
-        '<Thinking>',
-        `<details><summary${className}>${thinkingText}</summary>`,
-      );
-      if (idx !== -1) {
-        content = content.replace('</Thinking>', '</details>');
-      } else {
-        content += '</details>';
-      }
-    }
 
     const lessonStart = content.indexOf('<LessonPlan>');
     const lessonEnd = content.indexOf('</LessonPlan>');
@@ -159,10 +160,6 @@ function parseMessages(rawMessages: Message[]) {
 
       lessonPlan = parseMarkdownNumberedList(list);
 
-      // content =
-      //   content.slice(0, lessonStart) +
-      //   list.map(linkify).join('\n') +
-      //   content.slice(lessonEnd + '</LessonPlan>'.length);
       content = content
         .replace('<LessonPlan>', '')
         .replace('</LessonPlan>', '');
