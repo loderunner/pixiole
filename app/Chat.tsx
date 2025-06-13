@@ -66,7 +66,6 @@ function AssistantMessage({ message }: { message: Message }) {
 
 const initialMessageId = generateId();
 
-// Tag handlers for this component
 const tagHandlers = {
   Thinking: {
     onOpen: (isComplete: boolean) => {

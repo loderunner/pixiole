@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 export type TagHandler = {
   onOpen?: (isComplete: boolean) => string;
   onClose?: (content: string) => string;
+  onComplete?: (content: string) => void;
 };
 
 export type TagHandlers = Record<string, TagHandler>;
@@ -11,6 +12,7 @@ export type TagHandlers = Record<string, TagHandler>;
 function processStreamContent(
   content: string,
   tagHandlers: TagHandlers,
+  onFinish: boolean,
 ): string {
   let processedContent = content;
 
@@ -40,6 +42,11 @@ function processStreamContent(
       endIndex += processedContent.length - content.length;
       const innerContent = processedContent.slice(startIndex, endIndex);
 
+      // Call onComplete callback if we're in the finish context
+      if (onFinish && handler.onComplete !== undefined) {
+        handler.onComplete(innerContent);
+      }
+
       const replacement = handler.onClose(innerContent);
       processedContent =
         processedContent.slice(0, endIndex) +
@@ -51,24 +58,23 @@ function processStreamContent(
   return processedContent;
 }
 
-// Enhanced useChat options with tag processing
 export type UseStreamChatOptions = Parameters<typeof useChat>[0] & {
   tagHandlers?: TagHandlers;
 };
 
-// Hook that enhances useChat with stream processing
 export function useStreamChat(options: UseStreamChatOptions = {}) {
   const { tagHandlers, ...chatOptions } = options;
 
   const chat = useChat({
     ...chatOptions,
     onFinish: (message, finishOptions) => {
-      // Process the final message content
       if (message.role === 'assistant' && tagHandlers !== undefined) {
         const processedContent = processStreamContent(
           message.content,
           tagHandlers,
+          true,
         );
+
         if (processedContent !== message.content) {
           // Update the message with processed content
           chat.setMessages((messages) =>
@@ -84,13 +90,13 @@ export function useStreamChat(options: UseStreamChatOptions = {}) {
     },
   });
 
-  // Process messages in real-time during streaming
   const processedMessages = useMemo(() => {
     return chat.messages.map((message) => {
       if (message.role === 'assistant' && tagHandlers !== undefined) {
         const processedContent = processStreamContent(
           message.content,
           tagHandlers,
+          false,
         );
         return { ...message, content: processedContent };
       }
