@@ -1,9 +1,28 @@
 import { useChat } from '@ai-sdk/react';
 import { useMemo } from 'react';
 
+/**
+ * Handler for processing custom tags in stream content
+ */
 export type TagHandler = {
-  onOpen?: (isComplete: boolean) => string;
-  onClose?: (content: string) => string;
+  /**
+   * Called when an opening tag is encountered
+   * @param isComplete - Whether the tag has a matching closing tag
+   * @returns String to replace the opening tag with
+   */
+  onOpen?: (isComplete: boolean) => string | null;
+
+  /**
+   * Called when a closing tag is encountered
+   * @param content - The content between the opening and closing tags
+   * @returns Either a string to replace the closing tag with, or a tuple of [content replacement, closing tag replacement]
+   */
+  onClose?: (content: string) => string | [string, string] | null;
+
+  /**
+   * Called when stream processing is complete
+   * @param content - The final content between the opening and closing tags
+   */
   onComplete?: (content: string) => void;
 };
 
@@ -31,15 +50,17 @@ function processStreamContent(
     // Handle opening tag
     if (handler.onOpen !== undefined) {
       const replacement = handler.onOpen(isComplete);
-      processedContent =
-        processedContent.slice(0, startIndex) +
-        replacement +
-        processedContent.slice(startIndex + openTag.length);
-      startIndex += replacement.length - openTag.length;
+      if (replacement !== null) {
+        processedContent =
+          processedContent.slice(0, startIndex) +
+          replacement +
+          processedContent.slice(startIndex + openTag.length);
+        startIndex += replacement.length;
+        endIndex += replacement.length - openTag.length;
+      }
     }
 
     if (isComplete && handler.onClose !== undefined) {
-      endIndex += processedContent.length - content.length;
       const innerContent = processedContent.slice(startIndex, endIndex);
 
       // Call onComplete callback if we're in the finish context
@@ -48,10 +69,23 @@ function processStreamContent(
       }
 
       const replacement = handler.onClose(innerContent);
-      processedContent =
-        processedContent.slice(0, endIndex) +
-        replacement +
-        processedContent.slice(endIndex + closeTag.length);
+      if (Array.isArray(replacement)) {
+        // Replace the tag content and closing tag with the handler's
+        // replacement texts.
+        // The first element is the replacement for the tag content,
+        // the second element is the replacement for the closing tag.
+        processedContent =
+          processedContent.slice(0, startIndex) +
+          replacement[0] +
+          replacement[1] +
+          processedContent.slice(endIndex + closeTag.length);
+      } else if (replacement !== null) {
+        // Replace the closing tag with the handler's replacement text
+        processedContent =
+          processedContent.slice(0, endIndex) +
+          replacement +
+          processedContent.slice(endIndex + closeTag.length);
+      }
     }
   }
 
@@ -69,20 +103,7 @@ export function useStreamChat(options: UseStreamChatOptions = {}) {
     ...chatOptions,
     onFinish: (message, finishOptions) => {
       if (message.role === 'assistant' && tagHandlers !== undefined) {
-        const processedContent = processStreamContent(
-          message.content,
-          tagHandlers,
-          true,
-        );
-
-        if (processedContent !== message.content) {
-          // Update the message with processed content
-          chat.setMessages((messages) =>
-            messages.map((m) =>
-              m.id === message.id ? { ...m, content: processedContent } : m,
-            ),
-          );
-        }
+        processStreamContent(message.content, tagHandlers, true);
       }
 
       // Call original onFinish if provided

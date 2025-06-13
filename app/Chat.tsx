@@ -12,7 +12,7 @@ import rehypeRaw from 'rehype-raw';
 import { createHighlighterCore, createOnigurumaEngine } from 'shiki';
 
 import ChatArea from '@/src/components/ChatArea';
-import { useStreamChat } from '@/src/hooks/useStreamChat';
+import { TagHandlers, useStreamChat } from '@/src/hooks/useStreamChat';
 import { rehypeDiffPlugin } from '@/src/rehype-diff-plugin';
 
 type Props = {
@@ -66,7 +66,7 @@ function AssistantMessage({ message }: { message: Message }) {
 
 const initialMessageId = generateId();
 
-const tagHandlers = {
+const tagHandlers: TagHandlers = {
   Thinking: {
     onOpen: (isComplete: boolean) => {
       const thinkingText = isComplete ? 'Voir ma réflexion' : 'Je réfléchis...';
@@ -75,24 +75,20 @@ const tagHandlers = {
     },
     onClose: () => '</details>',
   },
+  LessonPlan: {
+    onOpen: () => '',
+    onClose: () => '',
+  },
 };
 
 export default function Chat({ initialMessage }: Props) {
-  const {
-    messages: rawMessages,
-    input,
-    handleInputChange,
-    handleSubmit,
-    reload,
-    stop,
-  } = useStreamChat({
-    initialMessages: [
-      { id: initialMessageId, content: initialMessage, role: 'user' },
-    ],
-    tagHandlers,
-  });
-
-  const { messages } = useMemo(() => parseMessages(rawMessages), [rawMessages]);
+  const { messages, input, handleInputChange, handleSubmit, reload, stop } =
+    useStreamChat({
+      initialMessages: [
+        { id: initialMessageId, content: initialMessage, role: 'user' },
+      ],
+      tagHandlers,
+    });
 
   useEffect(() => {
     reload();
@@ -136,116 +132,3 @@ export default function Chat({ initialMessage }: Props) {
 const scrollTo = throttle((element: HTMLElement, options: ScrollToOptions) => {
   element.scrollTo(options);
 }, 500);
-
-function parseMessages(rawMessages: Message[]) {
-  const messages: Message[] = [];
-  let lessonPlan: List = [];
-
-  for (const msg of rawMessages) {
-    if (msg.role !== 'assistant') {
-      messages.push(msg);
-      continue;
-    }
-
-    let content = msg.content;
-
-    const lessonStart = content.indexOf('<LessonPlan>');
-    const lessonEnd = content.indexOf('</LessonPlan>');
-    if (lessonStart !== -1 && lessonEnd !== -1) {
-      const list = content
-        .slice(lessonStart + '<LessonPlan>'.length, lessonEnd)
-        .trim()
-        .split('\n');
-
-      lessonPlan = parseMarkdownNumberedList(list);
-
-      content = content
-        .replace('<LessonPlan>', '')
-        .replace('</LessonPlan>', '');
-    } else {
-      content = content.replace('<LessonPlan>', '');
-    }
-
-    messages.push({
-      ...msg,
-      content,
-    });
-  }
-  return { messages, lessonPlan };
-}
-
-type List = (string | [string, List])[];
-
-function parseMarkdownNumberedList(lines: string[], depth = 0): List {
-  const result: List = [];
-  let i = 0;
-
-  while (i < lines.length) {
-    const line = lines[i];
-    const match = line.match(/^( *)\d+\.\s+(.+)$/);
-
-    if (match === null) {
-      i++;
-      continue;
-    }
-
-    const [, indentation, content] = match;
-    const currentDepth = indentation.length;
-
-    if (currentDepth < depth) {
-      // We've returned to a higher level, stop processing at this depth
-      break;
-    } else if (currentDepth === depth) {
-      // Look ahead for children
-      let nextIndex = i + 1;
-      let childDepth = -1;
-
-      // Find the next deeper level, if any
-      while (nextIndex < lines.length) {
-        const nextLine = lines[nextIndex];
-        const nextMatch = nextLine.match(/^( *)(\d+)\.\s+(.+)$/);
-
-        if (nextMatch === null) {
-          nextIndex++;
-          continue;
-        }
-
-        const nextIndent = nextMatch[1].length;
-
-        if (nextIndent > currentDepth) {
-          childDepth = nextIndent;
-          break;
-        } else if (nextIndent <= currentDepth) {
-          // This is a sibling or higher-level item
-          break;
-        }
-
-        nextIndex++;
-      }
-
-      // If we found children, parse them recursively
-      if (childDepth !== -1) {
-        const sublist = parseMarkdownNumberedList(
-          lines.slice(nextIndex),
-          childDepth,
-        );
-
-        // Add the sublist to our result
-        if (sublist.length > 0) {
-          result.push([content, sublist]);
-        } else {
-          result.push(content);
-        }
-      } else {
-        result.push(content);
-      }
-
-      i++;
-    } else {
-      // This line is at a deeper level than we're currently processing
-      i++;
-    }
-  }
-
-  return result;
-}
