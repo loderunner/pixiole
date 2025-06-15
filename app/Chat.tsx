@@ -5,56 +5,20 @@ import { StudentIcon } from '@phosphor-icons/react';
 import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
 import { transformerNotationDiff } from '@shikijs/transformers';
 import { generateId } from 'ai';
-import { applyPatch, parsePatch } from 'diff';
 import throttle from 'lodash.throttle';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { MarkdownHooks } from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import { createHighlighterCore, createOnigurumaEngine } from 'shiki';
 
-import ChatArea from '@/src/components/ChatArea';
-import { TagHandlers, useStreamChat } from '@/src/hooks/useStreamChat';
+import ChatArea from '@/src/ChatArea';
+import { useProject } from '@/src/project';
 import { rehypeDiffPlugin } from '@/src/rehype-diff-plugin';
+import { TagHandlers, useStreamChat } from '@/src/useStreamChat';
 
 type Props = {
   initialMessage: string;
 };
-
-type ProjectFile = {
-  name: string;
-  content: string;
-};
-
-type Project = {
-  files: ProjectFile[];
-};
-
-function applyDiff(originalContent: string, diffContent: string): string {
-  try {
-    const patches = parsePatch(diffContent);
-
-    if (patches.length === 0) {
-      return originalContent;
-    }
-
-    let content = originalContent;
-    for (const patch of patches) {
-      const result = applyPatch(content, patch, {
-        fuzzFactor: 2,
-        compareLine(_lineNumber, line, _operation, patchContent) {
-          return line.trim() === patchContent.trim();
-        },
-      });
-      if (result !== false) {
-        content = result;
-      }
-    }
-
-    return content;
-  } catch {
-    return originalContent;
-  }
-}
 
 function UserMessage({ message }: { message: Message }) {
   return (
@@ -104,7 +68,7 @@ function AssistantMessage({ message }: { message: Message }) {
 const initialMessageId = generateId();
 
 export default function Chat({ initialMessage }: Props) {
-  const [project, setProject] = useState<Project>({ files: [] });
+  const { createFile, editFile } = useProject();
 
   const tagHandlers: TagHandlers = {
     Thinking: {
@@ -137,13 +101,7 @@ export default function Chat({ initialMessage }: Props) {
             codeEndIndex > codeStartIndex
           ) {
             const fileContent = content.slice(codeStartIndex + 6, codeEndIndex); // +6 for "```lua\n";
-
-            setProject((prev) => ({
-              files: [
-                ...prev.files.filter((f) => f.name !== name),
-                { name, content: fileContent },
-              ],
-            }));
+            createFile(name, fileContent);
           }
         }
       },
@@ -164,22 +122,7 @@ export default function Chat({ initialMessage }: Props) {
             diffEndIndex > diffStartIndex
           ) {
             const diffContent = content.slice(diffStartIndex + 7, diffEndIndex); // +7 for "```diff\n"
-
-            setProject((prev) => {
-              const existingFile = prev.files.find((f) => f.name === name);
-              if (existingFile !== undefined) {
-                const updatedContent = applyDiff(
-                  existingFile.content,
-                  diffContent,
-                );
-                return {
-                  files: prev.files.map((f) =>
-                    f.name === name ? { ...f, content: updatedContent } : f,
-                  ),
-                };
-              }
-              return prev;
-            });
+            editFile(name, diffContent);
           }
         }
       },

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import ChatArea from '@/src/components/ChatArea';
+import ChatArea from '@/src/ChatArea';
 
 type Props = {
   onSubmit: (msg: string) => void;

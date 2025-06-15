@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import { PropsWithChildren } from 'react';
 
+import { ProjectProvider } from '@/src/project';
+
 import './fonts';
 import './globals.css';
 
@@ -11,7 +13,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html>
-      <body className="flex h-dvh w-dvw flex-col">{children}</body>
+      <body className="flex h-dvh w-dvw flex-col">
+        <ProjectProvider>{children}</ProjectProvider>
+      </body>
     </html>
   );
 }
