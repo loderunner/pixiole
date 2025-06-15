@@ -84,7 +84,7 @@ end
 <EditFile name="fibonacci.lua">
 
 \`\`\`diff
-@@ -2,11 +2,6 @@
+@@ -2,10 +2,5 @@
    if n <= 0 then return 0 end
    if n == 1 then return 1 end
 
@@ -117,7 +117,7 @@ export const mockModel = new MockLanguageModelV1({
         },
       ],
       initialDelayInMs: 200,
-      chunkDelayInMs: 5,
+      chunkDelayInMs: 10,
     }),
     rawCall: { rawPrompt: null, rawSettings: {} },
   }),

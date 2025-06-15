@@ -26,6 +26,7 @@
     "@shikijs/transformers": "3.6.0",
     "ai": "4.3.16",
     "clsx": "2.1.1",
+    "diff": "8.0.2",
     "lodash.throttle": "4.1.1",
     "nanoid": "5.1.5",
     "next": "15.3.2",
@@ -71,5 +72,13 @@
     "tailwindcss": "4.1.7",
     "typescript": "5.8.3",
     "vercel": "42.1.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@tailwindcss/oxide",
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
+    ]
   }
 }

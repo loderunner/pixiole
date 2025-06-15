@@ -8,25 +8,49 @@ export type TagHandler = {
   /**
    * Called when an opening tag is encountered
    * @param isComplete - Whether the tag has a matching closing tag
+   * @param attributes - Parsed attributes from the opening tag
    * @returns String to replace the opening tag with
    */
-  onOpen?: (isComplete: boolean) => string | null;
+  onOpen?: (
+    isComplete: boolean,
+    attributes: Record<string, string>,
+  ) => string | null;
 
   /**
    * Called when a closing tag is encountered
    * @param content - The content between the opening and closing tags
+   * @param attributes - Parsed attributes from the opening tag
    * @returns Either a string to replace the closing tag with, or a tuple of [content replacement, closing tag replacement]
    */
-  onClose?: (content: string) => string | [string, string] | null;
+  onClose?: (
+    content: string,
+    attributes: Record<string, string>,
+  ) => string | [string, string] | null;
 
   /**
    * Called when stream processing is complete
    * @param content - The final content between the opening and closing tags
+   * @param attributes - Parsed attributes from the opening tag
    */
-  onComplete?: (content: string) => void;
+  onComplete?: (content: string, attributes: Record<string, string>) => void;
 };
 
 export type TagHandlers = Record<string, TagHandler>;
+
+function parseTagAttributes(tagText: string): Record<string, string> {
+  const attributes: Record<string, string> = {};
+  tagText = tagText.slice(1, -1);
+  const attributeRegex = /(\w+)="([^"]*)"/g;
+
+  // Loop through all attribute pairs using RegExp.exec() which returns next
+  // match each time
+  let match: RegExpExecArray | null;
+  while ((match = attributeRegex.exec(tagText)) !== null) {
+    attributes[match[1]] = match[2];
+  }
+
+  return attributes;
+}
 
 function processStreamContent(
   content: string,
@@ -36,27 +60,37 @@ function processStreamContent(
   let processedContent = content;
 
   for (const [tagName, handler] of Object.entries(tagHandlers)) {
-    const openTag = `<${tagName}>`;
+    // Use regex to find opening tags with possible attributes
+    const openTagRegex = new RegExp(`<${tagName}(?:\\s[^>]*)?>`);
     const closeTag = `</${tagName}>`;
 
-    let startIndex = processedContent.indexOf(openTag);
-    if (startIndex === -1) {
+    const openTagMatch = processedContent.match(openTagRegex);
+    if (openTagMatch === null || openTagMatch.index === undefined) {
       continue;
     }
 
-    let endIndex = processedContent.indexOf(closeTag);
+    let startIndex = openTagMatch.index;
+    const openTagFullText = openTagMatch[0];
+    const openTagLength = openTagFullText.length;
+    const attributes = parseTagAttributes(openTagFullText);
+
+    let endIndex = processedContent.indexOf(
+      closeTag,
+      startIndex + openTagLength,
+    );
     const isComplete = endIndex !== -1;
 
     // Handle opening tag
     if (handler.onOpen !== undefined) {
-      const replacement = handler.onOpen(isComplete);
+      const replacement = handler.onOpen(isComplete, attributes);
       if (replacement !== null) {
         processedContent =
           processedContent.slice(0, startIndex) +
           replacement +
-          processedContent.slice(startIndex + openTag.length);
+          processedContent.slice(startIndex + openTagLength);
+
         startIndex += replacement.length;
-        endIndex += replacement.length - openTag.length;
+        endIndex += replacement.length - openTagLength;
       }
     }
 
@@ -65,10 +99,10 @@ function processStreamContent(
 
       // Call onComplete callback if we're in the finish context
       if (onFinish && handler.onComplete !== undefined) {
-        handler.onComplete(innerContent);
+        handler.onComplete(innerContent, attributes);
       }
 
-      const replacement = handler.onClose(innerContent);
+      const replacement = handler.onClose(innerContent, attributes);
       if (Array.isArray(replacement)) {
         // Replace the tag content and closing tag with the handler's
         // replacement texts.
