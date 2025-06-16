@@ -1,18 +1,39 @@
 'use client';
 
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-import Chat from './Chat';
 import Welcome from './Welcome';
+import type { CreateChatRequest } from './api/chats/route';
+import { ChatResponseSchema } from './api/chats/route';
 
-const mockMessage = `Un jeu de course de moto-laser similaire à celle dans TRON. Je veux pouvoir jouer contre l'ordinateur, donc il faut ajouter un IA.`;
+import { validateAPIResponse } from '@/src/api/validation';
 
 export default function Page() {
-  const [message, setMessage] = useState('');
+  const router = useRouter();
 
-  return message === '' ? (
-    <Welcome onSubmit={(m) => setMessage(m)} />
-  ) : (
-    <Chat initialMessage={message} />
-  );
+  const handleSubmit = async (message: string) => {
+    try {
+      // Create a new chat with initial message
+      const requestBody: CreateChatRequest = {
+        initialMessage: message,
+      };
+
+      const response = await fetch('/api/chats', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      const chat = await validateAPIResponse(response, ChatResponseSchema);
+
+      // Navigate to the chat page (no need for query params)
+      router.push(`/chat/${chat.id}`);
+    } catch (_error) {
+      // TODO: Show error message to user
+    }
+  };
+
+  return <Welcome onSubmit={handleSubmit} />;
 }

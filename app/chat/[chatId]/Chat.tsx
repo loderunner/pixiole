@@ -4,20 +4,28 @@ import { Message } from '@ai-sdk/react';
 import { StudentIcon } from '@phosphor-icons/react';
 import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
 import { transformerNotationDiff } from '@shikijs/transformers';
-import { generateId } from 'ai';
 import throttle from 'lodash.throttle';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { MarkdownHooks } from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import { createHighlighterCore, createOnigurumaEngine } from 'shiki';
 
+import type { CreateMessageRequest } from '@/app/api/chats/[chatId]/messages/route';
+import { CreateMessageResponseSchema } from '@/app/api/chats/[chatId]/messages/route';
 import ChatArea from '@/src/ChatArea';
+import { validateAPIResponse } from '@/src/api/validation';
 import { useProject } from '@/src/project';
 import { rehypeDiffPlugin } from '@/src/rehype-diff-plugin';
 import { TagHandlers, useStreamChat } from '@/src/useStreamChat';
 
 type Props = {
-  initialMessage: string;
+  chatId: string;
+  initialMessages?: Array<{
+    id: string;
+    role: 'user' | 'assistant';
+    content: string;
+    createdAt: string;
+  }>;
 };
 
 function UserMessage({ message }: { message: Message }) {
@@ -65,12 +73,11 @@ function AssistantMessage({ message }: { message: Message }) {
   );
 }
 
-const initialMessageId = generateId();
-
-export default function Chat({ initialMessage }: Props) {
-  const { createFile, editFile } = useProject();
-
-  const tagHandlers: TagHandlers = {
+function createTagHandlers(
+  createFile: (name: string, content: string) => void,
+  editFile: (name: string, content: string) => void,
+): TagHandlers {
+  return {
     Thinking: {
       onOpen: (isComplete: boolean) => {
         const thinkingText = isComplete
@@ -128,17 +135,81 @@ export default function Chat({ initialMessage }: Props) {
       },
     },
   };
+}
+
+export default function Chat({ chatId, initialMessages }: Props) {
+  const { createFile, editFile } = useProject();
+
+  const tagHandlers = useMemo(
+    () => createTagHandlers(createFile, editFile),
+    [createFile, editFile],
+  );
 
   const { messages, input, handleInputChange, handleSubmit, reload, stop } =
     useStreamChat({
-      initialMessages: [
-        { id: initialMessageId, content: initialMessage, role: 'user' },
-      ],
+      initialMessages: initialMessages?.map((msg) => ({
+        ...msg,
+        createdAt: new Date(msg.createdAt),
+      })),
       tagHandlers,
+      onFinish: async (message) => {
+        // Save assistant message to database
+        if (message.role === 'assistant') {
+          try {
+            const requestBody: CreateMessageRequest = {
+              role: 'assistant',
+              content: message.content,
+            };
+
+            const response = await fetch(`/api/chats/${chatId}/messages`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(requestBody),
+            });
+
+            await validateAPIResponse(response, CreateMessageResponseSchema);
+          } catch (_error) {
+            // TODO: Show error message to user
+          }
+        }
+      },
     });
 
+  // Custom submit handler to save user messages to database
+  const handleChatSubmit = async (e: React.FormEvent) => {
+    // Save user message to database
+    if (input.trim() !== '') {
+      try {
+        const requestBody: CreateMessageRequest = {
+          role: 'user',
+          content: input,
+        };
+
+        const response = await fetch(`/api/chats/${chatId}/messages`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        });
+
+        await validateAPIResponse(response, CreateMessageResponseSchema);
+      } catch (_error) {
+        // TODO: Show error message to user
+      }
+    }
+
+    // Continue with normal submit
+    handleSubmit(e);
+  };
+
   useEffect(() => {
-    reload();
+    // Auto-start generating response if there's only one user message
+    if (initialMessages?.length === 1 && initialMessages[0].role === 'user') {
+      reload();
+    }
     return stop;
   }, []);
 
@@ -170,7 +241,7 @@ export default function Chat({ initialMessage }: Props) {
         placeholder="Demande ce que tu veux à Pixiole"
         value={input}
         onChange={handleInputChange}
-        onSubmit={handleSubmit}
+        onSubmit={handleChatSubmit}
       />
     </div>
   );
