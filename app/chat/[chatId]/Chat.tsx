@@ -211,6 +211,7 @@ export default function Chat({ chatId, initialMessages }: Props) {
       reload();
     }
     return stop;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const messagesRef = useRef<HTMLDivElement>(null);
