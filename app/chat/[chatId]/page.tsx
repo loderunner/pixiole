@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 
 import Chat from './Chat';
 
-import type { ReadChatResponse } from '@/app/api/chats/[chatId]/route';
-import { ReadChatResponseSchema } from '@/app/api/chats/[chatId]/route';
+import type { ReadChatResponse } from '@/app/api/chats/[chatId]/types';
+import { ReadChatResponseSchema } from '@/app/api/chats/[chatId]/types';
 import { validateAPIResponse } from '@/src/api/validation';
 
 export default function ChatPage() {

@@ -10,8 +10,8 @@ import { MarkdownHooks } from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import { createHighlighterCore, createOnigurumaEngine } from 'shiki';
 
-import type { CreateMessageRequest } from '@/app/api/chats/[chatId]/messages/route';
-import { CreateMessageResponseSchema } from '@/app/api/chats/[chatId]/messages/route';
+import type { CreateMessageRequest } from '@/app/api/chats/[chatId]/messages/types';
+import { CreateMessageResponseSchema } from '@/app/api/chats/[chatId]/messages/types';
 import ChatArea from '@/src/ChatArea';
 import { validateAPIResponse } from '@/src/api/validation';
 import { useProject } from '@/src/project';

@@ -3,8 +3,8 @@
 import { useRouter } from 'next/navigation';
 
 import Welcome from './Welcome';
-import type { CreateChatRequest } from './api/chats/route';
-import { ChatResponseSchema } from './api/chats/route';
+import type { CreateChatRequest } from './api/chats/types';
+import { ChatResponseSchema } from './api/chats/types';
 
 import { validateAPIResponse } from '@/src/api/validation';
 
