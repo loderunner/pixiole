@@ -1,6 +1,7 @@
 import useSWR, { mutate } from 'swr';
 import useSWRMutation from 'swr/mutation';
 import type { ZodSchema } from 'zod';
+import { z } from 'zod';
 
 import { validateAPIResponse } from './validation';
 
@@ -14,8 +15,14 @@ import {
 } from '@/app/api/chats/[chatId]/messages/types';
 import type { ReadChatResponse } from '@/app/api/chats/[chatId]/types';
 import { ReadChatResponseSchema } from '@/app/api/chats/[chatId]/types';
-import type { CreateChatRequest } from '@/app/api/chats/types';
-import { ChatResponseSchema } from '@/app/api/chats/types';
+import type {
+  CreateChatRequest,
+  ListChatsResponse,
+} from '@/app/api/chats/types';
+import {
+  CreateChatResponseSchema,
+  ListChatsResponseSchema,
+} from '@/app/api/chats/types';
 
 /**
  * Custom fetcher function that validates API responses
@@ -72,13 +79,34 @@ export function useCreateChat() {
         body: JSON.stringify(arg),
       });
 
-      return validateAPIResponse(response, ChatResponseSchema);
+      return validateAPIResponse(response, CreateChatResponseSchema);
+    },
+    {
+      onSuccess: () => {
+        mutate(['/api/chats', ListChatsResponseSchema]);
+      },
     },
   );
 
   return {
     createChat: trigger,
     isCreating: isMutating,
+    error,
+  };
+}
+
+/**
+ * Hook to fetch all chats using SWR
+ */
+export function useChats() {
+  const { data, error, isLoading } = useSWR(
+    ['/api/chats', ListChatsResponseSchema],
+    ([url, schema]) => fetcher<ListChatsResponse>(url, schema),
+  );
+
+  return {
+    chats: data ?? [],
+    isLoading,
     error,
   };
 }

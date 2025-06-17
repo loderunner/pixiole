@@ -28,10 +28,16 @@ export const CreateChatRequestSchema = z.object({
 });
 
 /**
- * Schema for the chat response
+ * Schema for the created chat response
  */
-export const ChatResponseSchema = ChatSchema;
+export const CreateChatResponseSchema = ChatSchema;
+
+/**
+ * Schema for the list of chats response
+ */
+export const ListChatsResponseSchema = z.array(CreateChatResponseSchema);
 
 // Exported types
 export type CreateChatRequest = z.infer<typeof CreateChatRequestSchema>;
-export type ChatResponse = z.infer<typeof ChatResponseSchema>;
+export type CreateChatResponse = z.infer<typeof CreateChatResponseSchema>;
+export type ListChatsResponse = z.infer<typeof ListChatsResponseSchema>;

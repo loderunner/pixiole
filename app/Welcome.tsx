@@ -11,7 +11,7 @@ type Props = {
 export default function Welcome({ onSubmit }: Props) {
   const [description, setDescription] = useState('');
   return (
-    <div className="mx-auto mt-80 flex size-full max-w-3xl flex-col items-center gap-6">
+    <div className="mx-auto mt-80 flex size-full max-w-3xl flex-col items-center gap-6 p-6">
       <h1 className="text-center text-4xl font-extrabold">
         {"Bonjour! Qu'est-ce qu'on fabrique aujourd'hui?"}
       </h1>
