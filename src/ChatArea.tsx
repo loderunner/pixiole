@@ -9,19 +9,22 @@ import {
 } from 'react';
 import { twMerge } from 'tailwind-merge';
 
+import type { PropsWithClassName } from './PropsWithClassName';
+
+type Props = PropsWithClassName<{
+  value?: string;
+  onChange?: ChangeEventHandler<HTMLTextAreaElement>;
+  onSubmit?: ReactEventHandler;
+  placeholder: string;
+}>;
+
 export default function ChatArea({
   className,
   value,
   onChange,
   onSubmit,
   placeholder,
-}: {
-  className?: string;
-  value?: string;
-  onChange?: ChangeEventHandler<HTMLTextAreaElement>;
-  onSubmit?: ReactEventHandler;
-  placeholder: string;
-}) {
+}: Props) {
   const ref = useRef<HTMLTextAreaElement>(null);
 
   const rows = useMemo(() => {
