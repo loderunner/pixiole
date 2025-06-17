@@ -102,8 +102,8 @@ export function useCreateMessage(chatId: string) {
     },
     {
       onSuccess: () => {
-        // Invalidate messages cache after creating message to refetch updated messages
         mutate([`/api/chats/${chatId}/messages`, ListMessagesResponseSchema]);
+        mutate([`/api/chats/${chatId}`, ReadChatResponseSchema]);
       },
     },
   );
