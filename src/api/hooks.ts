@@ -1,7 +1,6 @@
 import useSWR, { mutate } from 'swr';
 import useSWRMutation from 'swr/mutation';
 import type { ZodSchema } from 'zod';
-import { z } from 'zod';
 
 import { validateAPIResponse } from './validation';
 
@@ -36,9 +35,8 @@ const fetcher = async <T>(url: string, schema: ZodSchema<T>): Promise<T> => {
  * Hook to fetch chat data using SWR (without messages)
  */
 export function useChat(chatId: string) {
-  const { data, error, isLoading } = useSWR(
-    [`/api/chats/${chatId}`, ReadChatResponseSchema],
-    ([url, schema]) => fetcher<ReadChatResponse>(url, schema),
+  const { data, error, isLoading } = useSWR(`/api/chats/${chatId}`, (url) =>
+    fetcher<ReadChatResponse>(url, ReadChatResponseSchema),
   );
 
   return {
@@ -53,8 +51,8 @@ export function useChat(chatId: string) {
  */
 export function useChatMessages(chatId: string) {
   const { data, error, isLoading } = useSWR(
-    [`/api/chats/${chatId}/messages`, ListMessagesResponseSchema],
-    ([url, schema]) => fetcher<ListMessagesResponse>(url, schema),
+    `/api/chats/${chatId}/messages`,
+    (url) => fetcher<ListMessagesResponse>(url, ListMessagesResponseSchema),
   );
 
   return {
@@ -83,7 +81,7 @@ export function useCreateChat() {
     },
     {
       onSuccess: () => {
-        mutate(['/api/chats', ListChatsResponseSchema]);
+        mutate('/api/chats');
       },
     },
   );
@@ -99,9 +97,8 @@ export function useCreateChat() {
  * Hook to fetch all chats using SWR
  */
 export function useChats() {
-  const { data, error, isLoading } = useSWR(
-    ['/api/chats', ListChatsResponseSchema],
-    ([url, schema]) => fetcher<ListChatsResponse>(url, schema),
+  const { data, error, isLoading } = useSWR('/api/chats', (url) =>
+    fetcher<ListChatsResponse>(url, ListChatsResponseSchema),
   );
 
   return {
@@ -130,8 +127,8 @@ export function useCreateMessage(chatId: string) {
     },
     {
       onSuccess: () => {
-        mutate([`/api/chats/${chatId}/messages`, ListMessagesResponseSchema]);
-        mutate([`/api/chats/${chatId}`, ReadChatResponseSchema]);
+        mutate(`/api/chats/${chatId}/messages`);
+        mutate(`/api/chats/${chatId}`);
       },
     },
   );
