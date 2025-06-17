@@ -1,7 +1,7 @@
 'use client';
 
 import { ChatCircleIcon, PlusIcon, XIcon } from '@phosphor-icons/react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 import { useChats } from '@/src/api/hooks';
 
@@ -11,18 +11,7 @@ type Props = {
 };
 
 export default function Sidebar({ isOpen, onClose }: Props) {
-  const router = useRouter();
   const { chats, isLoading } = useChats();
-
-  const handleNewChat = () => {
-    router.push('/');
-    onClose();
-  };
-
-  const handleChatClick = (chatId: string) => {
-    router.push(`/chat/${chatId}`);
-    onClose();
-  };
 
   return (
     <>
@@ -54,13 +43,14 @@ export default function Sidebar({ isOpen, onClose }: Props) {
 
           {/* New Chat Button */}
           <div className="border-b p-4">
-            <button
-              onClick={handleNewChat}
+            <Link
+              href="/"
+              onClick={onClose}
               className="flex w-full items-center gap-3 rounded-lg border border-gray-300 p-3 hover:bg-gray-50"
             >
               <PlusIcon className="h-5 w-5" />
               <span>Nouvelle conversation</span>
-            </button>
+            </Link>
           </div>
 
           {/* Chat List */}
@@ -74,9 +64,10 @@ export default function Sidebar({ isOpen, onClose }: Props) {
             ) : (
               <div className="p-2">
                 {chats.map((chat) => (
-                  <button
+                  <Link
                     key={chat.id}
-                    onClick={() => handleChatClick(chat.id)}
+                    href={`/chat/${chat.id}`}
+                    onClick={onClose}
                     className="mb-2 flex w-full items-center gap-3 rounded-lg p-3 text-left hover:bg-gray-50"
                   >
                     <ChatCircleIcon className="h-5 w-5 text-gray-400" />
@@ -88,7 +79,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
                         {new Date(chat.updatedAt).toLocaleDateString('fr-FR')}
                       </div>
                     </div>
-                  </button>
+                  </Link>
                 ))}
               </div>
             )}
