@@ -37,5 +37,5 @@ export default function ChatPage() {
     );
   }
 
-  return <Chat chatId={chatId} />;
+  return <Chat chatId={chatId} title={chat.title} />;
 }

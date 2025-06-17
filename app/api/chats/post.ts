@@ -49,7 +49,7 @@ export async function POST(
   const hasInitialMessage = initialMessage.trim() !== '';
 
   // Generate title based on initial message if not provided
-  let finalTitle = title;
+  let finalTitle = 'Nouveau projet';
   if (typeof title !== 'string' || title.trim() === '') {
     if (hasInitialMessage) {
       try {
@@ -63,8 +63,6 @@ export async function POST(
         // Fallback to a default title if LLM call fails
         finalTitle = 'Nouveau projet';
       }
-    } else {
-      finalTitle = 'Nouveau projet';
     }
   }
 

@@ -6,8 +6,8 @@ import { z } from 'zod';
 export const ChatSchema = z.object({
   /** Unique identifier for the chat */
   id: z.string(),
-  /** Title of the chat, can be null if not set */
-  title: z.string().nullable(),
+  /** Title of the chat */
+  title: z.string(),
   /** ISO string representing when the chat was created */
   createdAt: z.string(),
   /** ISO string representing when the chat was last updated */

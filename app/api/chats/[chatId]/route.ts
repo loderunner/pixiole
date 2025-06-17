@@ -36,7 +36,6 @@ export async function GET(
   const response = ReadChatResponseSchema.parse({
     id: chat.id,
     title: chat.title,
-    status: chat.status,
     createdAt: chat.createdAt.toISOString(),
     updatedAt: chat.updatedAt.toISOString(),
   });

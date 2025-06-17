@@ -19,6 +19,7 @@ import { TagHandlers, useStreamChat } from '@/src/useStreamChat';
 
 type Props = {
   chatId: string;
+  title: string;
 };
 
 function UserMessage({ message }: { message: Message }) {
@@ -130,7 +131,7 @@ function createTagHandlers(
   };
 }
 
-export default function Chat({ chatId }: Props) {
+export default function Chat({ chatId, title }: Props) {
   const { createFile, editFile } = useProject();
   const { createMessage } = useCreateMessage(chatId);
   const {
@@ -239,11 +240,9 @@ export default function Chat({ chatId }: Props) {
   // TODO: Add a error state
 
   return (
-    <div className="mx-auto flex size-full max-w-3xl flex-col items-stretch py-8">
-      <div
-        className="min-h-0 grow overflow-auto not-last:mb-6"
-        ref={messagesRef}
-      >
+    <div className="mx-auto flex size-full max-w-3xl flex-col items-stretch">
+      <h1 className="py-6 text-center text-2xl font-bold">{title}</h1>
+      <div className="min-h-0 grow overflow-auto" ref={messagesRef}>
         {messages.map((m) =>
           m.role === 'user' ? (
             <UserMessage key={m.id} message={m} />
@@ -252,12 +251,14 @@ export default function Chat({ chatId }: Props) {
           ),
         )}
       </div>
-      <ChatArea
-        placeholder="Demande ce que tu veux à Pixiole"
-        value={input}
-        onChange={handleInputChange}
-        onSubmit={handleChatSubmit}
-      />
+      <div className="py-4">
+        <ChatArea
+          placeholder="Demande ce que tu veux à Pixiole"
+          value={input}
+          onChange={handleInputChange}
+          onSubmit={handleChatSubmit}
+        />
+      </div>
     </div>
   );
 }
