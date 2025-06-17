@@ -72,9 +72,6 @@ export async function POST(
   const newChat = {
     id: chatId,
     title: finalTitle,
-    status: hasInitialMessage
-      ? ('awaiting_response' as const)
-      : ('active' as const),
     createdAt: now,
     updatedAt: now,
   };
@@ -95,7 +92,6 @@ export async function POST(
   const response = ChatResponseSchema.parse({
     id: chatId,
     title: newChat.title,
-    status: newChat.status,
     createdAt: newChat.createdAt.toISOString(),
     updatedAt: newChat.updatedAt.toISOString(),
   });

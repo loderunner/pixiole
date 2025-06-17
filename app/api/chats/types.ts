@@ -7,9 +7,7 @@ export const ChatSchema = z.object({
   /** Unique identifier for the chat */
   id: z.string(),
   /** Title of the chat, can be null if not set */
-  title: z.string(),
-  /** Status of the chat - awaiting_response or active */
-  status: z.enum(['awaiting_response', 'active']),
+  title: z.string().nullable(),
   /** ISO string representing when the chat was created */
   createdAt: z.string(),
   /** ISO string representing when the chat was last updated */

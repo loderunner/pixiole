@@ -4,9 +4,6 @@ import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 export const chats = sqliteTable('chats', {
   id: text('id').primaryKey(),
   title: text('title'),
-  status: text('status', { enum: ['awaiting_response', 'active'] })
-    .notNull()
-    .default('active'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 });

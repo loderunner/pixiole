@@ -74,13 +74,8 @@ export async function POST(
 
   await db.insert(messages).values(newMessage);
 
-  // If this is an assistant message and chat is awaiting response, mark as active
-  const chatUpdate =
-    role === 'assistant' && chat.status === 'awaiting_response'
-      ? { updatedAt: now, status: 'active' as const }
-      : { updatedAt: now };
-
-  await db.update(chats).set(chatUpdate).where(eq(chats.id, chatId));
+  // Update chat timestamp
+  await db.update(chats).set({ updatedAt: now }).where(eq(chats.id, chatId));
 
   const response = CreateMessageResponseSchema.parse({
     id: messageId,

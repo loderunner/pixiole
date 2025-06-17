@@ -19,7 +19,6 @@ import { TagHandlers, useStreamChat } from '@/src/useStreamChat';
 
 type Props = {
   chatId: string;
-  shouldAutoStartResponse: boolean;
 };
 
 function UserMessage({ message }: { message: Message }) {
@@ -131,13 +130,13 @@ function createTagHandlers(
   };
 }
 
-export default function Chat({ chatId, shouldAutoStartResponse }: Props) {
+export default function Chat({ chatId }: Props) {
   const { createFile, editFile } = useProject();
   const { createMessage } = useCreateMessage(chatId);
   const {
     messages: apiMessages,
     isLoading: messagesLoading,
-    error: _messagesError, // TODO: Could show error state for message loading
+    error: messagesError,
   } = useChatMessages(chatId);
 
   const tagHandlers = useMemo(
@@ -167,6 +166,13 @@ export default function Chat({ chatId, shouldAutoStartResponse }: Props) {
     },
   });
 
+  // Ref to track if we've already triggered auto-response
+  const hasTriggeredAutoResponse = useRef(false);
+
+  // Keep latest stop function ref for cleanup
+  const stopRef = useRef(stop);
+  useEffect(() => (stopRef.current = stop), [stop]);
+
   // Populate chat with messages once loaded from SWR
   useEffect(() => {
     if (!messagesLoading && apiMessages.length > 0 && messages.length === 0) {
@@ -179,13 +185,29 @@ export default function Chat({ chatId, shouldAutoStartResponse }: Props) {
     }
   }, [messagesLoading, apiMessages, messages.length, setMessages]);
 
-  // Auto-start generating response if chat is awaiting response and we have messages
   useEffect(() => {
-    if (shouldAutoStartResponse && !messagesLoading) {
-      reload();
-      return stop;
+    if (
+      hasTriggeredAutoResponse.current ||
+      messagesLoading ||
+      messagesError !== undefined ||
+      messages.length === 0
+    ) {
+      return;
     }
-  }, [shouldAutoStartResponse, messagesLoading]);
+
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage.role === 'user') {
+      hasTriggeredAutoResponse.current = true;
+      reload();
+    }
+  }, [messagesLoading, messagesError, messages, reload]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopRef.current();
+    };
+  }, []);
 
   // Custom submit handler to save user messages to database
   const handleChatSubmit = async (e: React.FormEvent) => {

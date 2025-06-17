@@ -37,10 +37,5 @@ export default function ChatPage() {
     );
   }
 
-  return (
-    <Chat
-      chatId={chatId}
-      shouldAutoStartResponse={chat.status === 'awaiting_response'}
-    />
-  );
+  return <Chat chatId={chatId} />;
 }
