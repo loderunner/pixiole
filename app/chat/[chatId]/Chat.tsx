@@ -11,21 +11,15 @@ import rehypeRaw from 'rehype-raw';
 import { createHighlighterCore, createOnigurumaEngine } from 'shiki';
 
 import type { CreateMessageRequest } from '@/app/api/chats/[chatId]/messages/types';
-import { CreateMessageResponseSchema } from '@/app/api/chats/[chatId]/messages/types';
 import ChatArea from '@/src/ChatArea';
-import { validateAPIResponse } from '@/src/api/validation';
+import { useChatMessages, useCreateMessage } from '@/src/api/hooks';
 import { useProject } from '@/src/project';
 import { rehypeDiffPlugin } from '@/src/rehype-diff-plugin';
 import { TagHandlers, useStreamChat } from '@/src/useStreamChat';
 
 type Props = {
   chatId: string;
-  initialMessages?: Array<{
-    id: string;
-    role: 'user' | 'assistant';
-    content: string;
-    createdAt: string;
-  }>;
+  shouldAutoStartResponse: boolean;
 };
 
 function UserMessage({ message }: { message: Message }) {
@@ -137,82 +131,77 @@ function createTagHandlers(
   };
 }
 
-export default function Chat({ chatId, initialMessages }: Props) {
+export default function Chat({ chatId, shouldAutoStartResponse }: Props) {
   const { createFile, editFile } = useProject();
+  const { createMessage } = useCreateMessage(chatId);
+  const {
+    messages: apiMessages,
+    isLoading: messagesLoading,
+    error: _messagesError, // TODO: Could show error state for message loading
+  } = useChatMessages(chatId);
 
   const tagHandlers = useMemo(
     () => createTagHandlers(createFile, editFile),
     [createFile, editFile],
   );
 
-  const { messages, input, handleInputChange, handleSubmit, reload, stop } =
-    useStreamChat({
-      initialMessages: initialMessages?.map((msg) => ({
-        ...msg,
-        createdAt: new Date(msg.createdAt),
-      })),
-      tagHandlers,
-      onFinish: async (message) => {
-        // Save assistant message to database
-        if (message.role === 'assistant') {
-          try {
-            const requestBody: CreateMessageRequest = {
-              role: 'assistant',
-              content: message.content,
-            };
+  const {
+    messages,
+    setMessages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    reload,
+    stop,
+  } = useStreamChat({
+    tagHandlers,
+    onFinish: async (message) => {
+      if (message.role === 'assistant') {
+        const requestBody: CreateMessageRequest = {
+          role: 'assistant',
+          content: message.content,
+        };
 
-            const response = await fetch(`/api/chats/${chatId}/messages`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(requestBody),
-            });
+        await createMessage(requestBody);
+      }
+    },
+  });
 
-            await validateAPIResponse(response, CreateMessageResponseSchema);
-          } catch (_error) {
-            // TODO: Show error message to user
-          }
-        }
-      },
-    });
+  // Populate chat with messages once loaded from SWR
+  useEffect(() => {
+    if (!messagesLoading && apiMessages.length > 0 && messages.length === 0) {
+      setMessages(
+        apiMessages.map((msg) => ({
+          ...msg,
+          createdAt: new Date(msg.createdAt),
+        })),
+      );
+    }
+  }, [messagesLoading, apiMessages, messages.length, setMessages]);
+
+  // Auto-start generating response if chat is awaiting response and we have messages
+  useEffect(() => {
+    if (shouldAutoStartResponse && !messagesLoading) {
+      reload();
+      return stop;
+    }
+  }, [shouldAutoStartResponse, messagesLoading]);
 
   // Custom submit handler to save user messages to database
   const handleChatSubmit = async (e: React.FormEvent) => {
     // Save user message to database
     if (input.trim() !== '') {
-      try {
-        const requestBody: CreateMessageRequest = {
-          role: 'user',
-          content: input,
-        };
+      const requestBody: CreateMessageRequest = {
+        role: 'user',
+        content: input,
+      };
 
-        const response = await fetch(`/api/chats/${chatId}/messages`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestBody),
-        });
-
-        await validateAPIResponse(response, CreateMessageResponseSchema);
-      } catch (_error) {
-        // TODO: Show error message to user
-      }
+      await createMessage(requestBody);
     }
 
     // Continue with normal submit
     handleSubmit(e);
   };
-
-  useEffect(() => {
-    // Auto-start generating response if there's only one user message
-    if (initialMessages?.length === 1 && initialMessages[0].role === 'user') {
-      reload();
-    }
-    return stop;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const messagesRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -223,6 +212,9 @@ export default function Chat({ chatId, initialMessages }: Props) {
       });
     }
   }, [messages]);
+
+  // TODO: Add a loading state
+  // TODO: Add a error state
 
   return (
     <div className="mx-auto flex size-full max-w-3xl flex-col items-stretch py-8">

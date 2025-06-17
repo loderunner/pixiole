@@ -12,7 +12,7 @@ type RouteContext = {
 };
 
 /**
- * Get a chat with its messages
+ * Get a chat
  */
 export async function GET(
   _request: NextRequest,
@@ -20,14 +20,9 @@ export async function GET(
 ): Promise<NextResponse<ReadChatResponse | ErrorResponse>> {
   const { chatId } = await context.params;
 
-  // Fetch chat with messages from database
+  // Fetch chat from database
   const chat = await db.query.chats.findFirst({
     where: eq(chats.id, chatId),
-    with: {
-      messages: {
-        orderBy: (messages, { asc }) => [asc(messages.createdAt)],
-      },
-    },
   });
 
   // Check if chat exists
@@ -41,14 +36,9 @@ export async function GET(
   const response = ReadChatResponseSchema.parse({
     id: chat.id,
     title: chat.title,
+    status: chat.status,
     createdAt: chat.createdAt.toISOString(),
     updatedAt: chat.updatedAt.toISOString(),
-    messages: chat.messages.map((message) => ({
-      id: message.id,
-      role: message.role,
-      content: message.content,
-      createdAt: message.createdAt.toISOString(),
-    })),
   });
 
   return NextResponse.json(response);

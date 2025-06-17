@@ -46,10 +46,12 @@ export async function POST(
   const chatId = nanoid(8);
   const now = new Date();
 
+  const hasInitialMessage = initialMessage.trim() !== '';
+
   // Generate title based on initial message if not provided
   let finalTitle = title;
   if (typeof title !== 'string' || title.trim() === '') {
-    if (initialMessage.trim() !== '') {
+    if (hasInitialMessage) {
       try {
         const result = await generateText({
           model: mockModel,
@@ -70,13 +72,16 @@ export async function POST(
   const newChat = {
     id: chatId,
     title: finalTitle,
+    status: hasInitialMessage
+      ? ('awaiting_response' as const)
+      : ('active' as const),
     createdAt: now,
     updatedAt: now,
   };
 
   await db.insert(chats).values(newChat);
 
-  if (typeof initialMessage === 'string' && initialMessage.trim() !== '') {
+  if (hasInitialMessage) {
     const messageId = nanoid(8);
     await db.insert(messages).values({
       id: messageId,
@@ -90,6 +95,7 @@ export async function POST(
   const response = ChatResponseSchema.parse({
     id: chatId,
     title: newChat.title,
+    status: newChat.status,
     createdAt: newChat.createdAt.toISOString(),
     updatedAt: newChat.updatedAt.toISOString(),
   });

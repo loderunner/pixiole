@@ -1,6 +1,22 @@
 import { z } from 'zod';
 
 /**
+ * Schema for a chat
+ */
+export const ChatSchema = z.object({
+  /** Unique identifier for the chat */
+  id: z.string(),
+  /** Title of the chat, can be null if not set */
+  title: z.string(),
+  /** Status of the chat - awaiting_response or active */
+  status: z.enum(['awaiting_response', 'active']),
+  /** ISO string representing when the chat was created */
+  createdAt: z.string(),
+  /** ISO string representing when the chat was last updated */
+  updatedAt: z.string(),
+});
+
+/**
  * Schema for creating a new chat
  */
 export const CreateChatRequestSchema = z.object({
@@ -16,16 +32,7 @@ export const CreateChatRequestSchema = z.object({
 /**
  * Schema for the chat response
  */
-export const ChatResponseSchema = z.object({
-  /** Unique identifier for the chat */
-  id: z.string(),
-  /** Title of the chat, can be null if not set */
-  title: z.string(),
-  /** ISO string representing when the chat was created */
-  createdAt: z.string(),
-  /** ISO string representing when the chat was last updated */
-  updatedAt: z.string(),
-});
+export const ChatResponseSchema = ChatSchema;
 
 // Exported types
 export type CreateChatRequest = z.infer<typeof CreateChatRequestSchema>;

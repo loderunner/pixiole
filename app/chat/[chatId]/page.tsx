@@ -1,43 +1,17 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
 import Chat from './Chat';
 
-import type { ReadChatResponse } from '@/app/api/chats/[chatId]/types';
-import { ReadChatResponseSchema } from '@/app/api/chats/[chatId]/types';
-import { validateAPIResponse } from '@/src/api/validation';
+import { useChat } from '@/src/api/hooks';
 
 export default function ChatPage() {
   const params = useParams();
   const chatId = params.chatId as string;
-  const [chatData, setChatData] = useState<ReadChatResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { chat, isLoading, error } = useChat(chatId);
 
-  useEffect(() => {
-    if (chatId === '') return;
-
-    const fetchChat = async () => {
-      try {
-        const response = await fetch(`/api/chats/${chatId}`);
-        const data = await validateAPIResponse(
-          response,
-          ReadChatResponseSchema,
-        );
-        setChatData(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchChat();
-  }, [chatId]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-lg">Loading chat...</div>
@@ -45,15 +19,17 @@ export default function ChatPage() {
     );
   }
 
-  if (typeof error === 'string' && error !== '') {
+  if (error !== undefined) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="text-lg text-red-600">Error: {error}</div>
+        <div className="text-lg text-red-600">
+          Error: {error instanceof Error ? error.message : 'Unknown error'}
+        </div>
       </div>
     );
   }
 
-  if (chatData === null) {
+  if (chat === undefined) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-lg">Chat not found</div>
@@ -61,5 +37,10 @@ export default function ChatPage() {
     );
   }
 
-  return <Chat chatId={chatId} initialMessages={chatData.messages} />;
+  return (
+    <Chat
+      chatId={chatId}
+      shouldAutoStartResponse={chat.status === 'awaiting_response'}
+    />
+  );
 }
