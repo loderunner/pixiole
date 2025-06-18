@@ -18,6 +18,7 @@ import { ReadChatResponseSchema } from '@/app/api/chats/[chatId]/types';
 import type {
   CreateChatRequest,
   ListChatsResponse,
+  CreateChatResponse,
 } from '@/app/api/chats/types';
 import {
   CreateChatResponseSchema,
@@ -82,7 +83,10 @@ export function useCreateChat() {
       return validateAPIResponse(response, CreateChatResponseSchema);
     },
     {
-      onSuccess: () => {
+      onSuccess: (data: CreateChatResponse) => {
+        // Populate the individual chat cache to avoid refetch when navigating to the chat page
+        mutate([`/api/chats/${data.id}`, ReadChatResponseSchema], data, false);
+        // Update the chats list cache
         mutate(['/api/chats', ListChatsResponseSchema]);
       },
     },
