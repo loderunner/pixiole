@@ -1,5 +1,5 @@
-import { useChat } from '@ai-sdk/react';
-import { useMemo } from 'react';
+import { UseChatOptions, useChat } from '@ai-sdk/react';
+import { useCallback, useMemo } from 'react';
 
 /**
  * Handler for processing custom tags in stream content
@@ -131,18 +131,23 @@ export type UseStreamChatOptions = Parameters<typeof useChat>[0] & {
 };
 
 export function useStreamChat(options: UseStreamChatOptions = {}) {
-  const { tagHandlers, ...chatOptions } = options;
+  const { tagHandlers, onFinish: onFinishOption, ...chatOptions } = options;
 
-  const chat = useChat({
-    ...chatOptions,
-    onFinish: (message, finishOptions) => {
+  const onFinish = useCallback<NonNullable<UseChatOptions['onFinish']>>(
+    (message, finishOptions) => {
       if (message.role === 'assistant' && tagHandlers !== undefined) {
         processStreamContent(message.content, tagHandlers, true);
       }
 
       // Call original onFinish if provided
-      chatOptions.onFinish?.(message, finishOptions);
+      onFinishOption?.(message, finishOptions);
     },
+    [onFinishOption, tagHandlers],
+  );
+
+  const chat = useChat({
+    ...chatOptions,
+    onFinish,
   });
 
   const processedMessages = useMemo(() => {

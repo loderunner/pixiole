@@ -4,6 +4,7 @@ import { Message } from '@ai-sdk/react';
 import { StudentIcon } from '@phosphor-icons/react';
 import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
 import { transformerNotationDiff } from '@shikijs/transformers';
+import { Ref, useMemo } from 'react';
 import { MarkdownHooks } from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import { createHighlighterCore, createOnigurumaEngine } from 'shiki';
@@ -58,18 +59,22 @@ function AssistantMessage({ message }: { message: Message }) {
 
 type Props = PropsWithClassName<{
   messages: Message[];
+  ref?: Ref<HTMLDivElement>;
 }>;
 
-export default function ChatMessages({ className, messages }: Props) {
+export default function ChatMessages({ className, messages, ref }: Props) {
+  const messageElements = useMemo(() => {
+    return messages.map((m) =>
+      m.role === 'user' ? (
+        <UserMessage key={m.id} message={m} />
+      ) : (
+        <AssistantMessage key={m.id} message={m} />
+      ),
+    );
+  }, [messages]);
   return (
-    <div className={className}>
-      {messages.map((m) =>
-        m.role === 'user' ? (
-          <UserMessage key={m.id} message={m} />
-        ) : (
-          <AssistantMessage key={m.id} message={m} />
-        ),
-      )}
+    <div className={className} ref={ref}>
+      {messageElements}
     </div>
   );
 }
