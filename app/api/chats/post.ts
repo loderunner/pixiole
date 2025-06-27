@@ -1,9 +1,8 @@
+import { openai } from '@ai-sdk/openai';
 import { generateText } from 'ai';
 import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 import { ZodError } from 'zod';
-
-import { mockModel } from '../chat/mock-model';
 
 import {
   CreateChatRequestSchema,
@@ -54,7 +53,7 @@ export async function POST(
     if (hasInitialMessage) {
       try {
         const result = await generateText({
-          model: mockModel,
+          model: openai('gpt-4.1'),
           prompt: `Generate a short, creative title IN FRENCH (2-6 words) for a PICO-8 game development conversation based on this user message: "${initialMessage}". The title should be engaging and related to the specific game concept mentioned. The title MUST BE in French. Just return the title, nothing else.`,
           maxTokens: 20,
         });

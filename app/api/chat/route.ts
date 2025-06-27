@@ -1,8 +1,8 @@
+import { openai } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 import { NextRequest } from 'next/server';
 import { ZodError } from 'zod';
 
-import { mockModel } from './mock-model';
 import { systemPrompt } from './prompt';
 import { ChatRequestSchema } from './types';
 
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
   const { messages } = validatedBody;
 
   const result = streamText({
-    model: mockModel, // openai('gpt-4.1'),
+    model: openai('gpt-4.1'),
     messages: [
       {
         role: 'system',
