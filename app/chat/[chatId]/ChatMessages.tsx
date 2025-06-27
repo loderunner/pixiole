@@ -18,11 +18,13 @@ function UserMessage({ message }: { message: Message }) {
       <div className="flex-shrink-0 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-3 shadow-lg">
         <StudentIcon className="text-xl text-white" />
       </div>
-      <div className="terminal-window flex-1 border-blue-400 bg-gray-900/60 p-4">
-        <div className="mb-2 text-xs tracking-wide text-blue-200 uppercase opacity-75">
+      <div className="terminal-window flex-1 border-blue-600 bg-slate-100/60 p-4 dark:border-blue-400 dark:bg-gray-900/60">
+        <div className="mb-2 text-xs tracking-wide text-blue-700 uppercase opacity-75 dark:text-blue-200">
           Toi
         </div>
-        <div className="leading-relaxed text-blue-100">{message.content}</div>
+        <div className="leading-relaxed text-blue-900 dark:text-blue-100">
+          {message.content}
+        </div>
       </div>
     </div>
   );
@@ -120,13 +122,111 @@ const pixioleTerminalTheme = {
   ],
 };
 
+// Light theme variant for better readability
+const pixioleLightTheme = {
+  name: 'pixiole-light',
+  type: 'light' as const,
+  fg: '#1b5e20',
+  bg: '#f8f9fa',
+  colors: {
+    'editor.background': '#f8f9fa',
+    'editor.foreground': '#1b5e20',
+    'terminal.background': '#f8f9fa',
+    'terminal.foreground': '#1b5e20',
+  },
+  tokenColors: [
+    {
+      scope: ['comment', 'punctuation.definition.comment'],
+      settings: {
+        foreground: '#4a7c59',
+        fontStyle: 'italic',
+      },
+    },
+    {
+      scope: ['keyword', 'storage.type', 'storage.modifier'],
+      settings: {
+        foreground: '#2d7d32',
+        fontStyle: 'bold',
+      },
+    },
+    {
+      scope: ['keyword.control', 'keyword.operator'],
+      settings: {
+        foreground: '#388e3c',
+      },
+    },
+    {
+      scope: ['string', 'string.quoted'],
+      settings: {
+        foreground: '#1b5e20',
+      },
+    },
+    {
+      scope: ['constant.numeric', 'constant.language'],
+      settings: {
+        foreground: '#2e7d32',
+      },
+    },
+    {
+      scope: ['variable', 'variable.parameter'],
+      settings: {
+        foreground: '#1b5e20',
+      },
+    },
+    {
+      scope: ['entity.name.function', 'meta.function-call'],
+      settings: {
+        foreground: '#2d7d32',
+        fontStyle: 'bold',
+      },
+    },
+    {
+      scope: ['entity.name.type', 'entity.name.class'],
+      settings: {
+        foreground: '#388e3c',
+      },
+    },
+    {
+      scope: ['punctuation', 'meta.brace'],
+      settings: {
+        foreground: '#4a7c59',
+      },
+    },
+    {
+      scope: ['operator', 'keyword.operator.arithmetic'],
+      settings: {
+        foreground: '#388e3c',
+      },
+    },
+    {
+      scope: ['constant.character.escape'],
+      settings: {
+        foreground: '#2d7d32',
+      },
+    },
+    {
+      scope: ['invalid', 'invalid.illegal'],
+      settings: {
+        foreground: '#d32f2f',
+        fontStyle: 'underline',
+      },
+    },
+  ],
+};
+
 const highlighter = await createHighlighterCore({
-  themes: [pixioleTerminalTheme],
+  themes: [pixioleTerminalTheme, pixioleLightTheme],
   langs: [import('@shikijs/langs/lua')],
   engine: createOnigurumaEngine(() => import('shiki/wasm')),
 });
 
 function AssistantMessage({ message }: { message: Message }) {
+  // Detect if we're in dark mode by checking the document class
+  const isDark =
+    typeof document !== 'undefined'
+      ? document.documentElement.classList.contains('dark')
+      : true;
+
   const content = useMemo(() => {
     return (
       <MarkdownHooks
@@ -137,7 +237,7 @@ function AssistantMessage({ message }: { message: Message }) {
             rehypeShikiFromHighlighter,
             highlighter,
             {
-              theme: 'pixiole-terminal',
+              theme: isDark ? 'pixiole-terminal' : 'pixiole-light',
               transformers: [transformerNotationDiff()],
             },
           ],
@@ -146,18 +246,18 @@ function AssistantMessage({ message }: { message: Message }) {
         {message.content}
       </MarkdownHooks>
     );
-  }, [message.content]);
+  }, [message.content, isDark]);
 
   return (
     <div className="mb-6 flex flex-row items-start gap-4">
       <div className="glow-text flex-shrink-0 rounded-full bg-gradient-to-br from-emerald-600 to-teal-700 p-3 shadow-lg">
         <RobotIcon className="text-xl text-white" />
       </div>
-      <div className="terminal-window flex-1 bg-gray-900/80 p-4">
-        <div className="glow-text mb-2 text-xs tracking-wide text-emerald-400 uppercase opacity-75">
+      <div className="terminal-window flex-1 bg-slate-100/80 p-4 dark:bg-gray-900/80">
+        <div className="glow-text mb-2 text-xs tracking-wide text-emerald-700 uppercase opacity-75 dark:text-emerald-400">
           Pixiole IA
         </div>
-        <div className="prose tutorial prose-li:my-1 prose-p:my-3 prose-headings:text-emerald-300 prose-strong:text-emerald-200 prose-code:text-emerald-400 prose-code:bg-gray-900/60 prose-code:px-2 prose-code:py-1 prose-code:rounded max-w-none text-emerald-100">
+        <div className="prose tutorial prose-li:my-1 prose-p:my-3 prose-headings:text-emerald-800 dark:prose-headings:text-emerald-300 prose-strong:text-emerald-900 dark:prose-strong:text-emerald-200 prose-code:text-emerald-800 dark:prose-code:text-emerald-400 prose-code:bg-slate-200/60 dark:prose-code:bg-gray-900/60 prose-code:px-2 prose-code:py-1 prose-code:rounded max-w-none text-emerald-900 dark:text-emerald-100">
           <div className="font-serif leading-relaxed">{content}</div>
         </div>
       </div>

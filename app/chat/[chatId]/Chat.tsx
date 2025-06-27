@@ -195,13 +195,13 @@ export default function Chat({ chatId, title }: Props) {
       {/* Terminal-style header */}
       <div className="terminal-window m-4 mb-2 flex-shrink-0 p-4">
         <div className="text-center">
-          <div className="mb-2 text-sm text-green-400 opacity-75">
+          <div className="mb-2 text-sm text-emerald-600 opacity-75 dark:text-green-400">
             {'>>> SESSION ACTIVE <<<'}
           </div>
           <h1 className="terminal-text glow-text text-xl font-bold md:text-2xl">
             🎮 {title} 🎮
           </h1>
-          <div className="mt-2 text-sm text-green-300 opacity-60">
+          <div className="mt-2 text-sm text-emerald-700 opacity-60 dark:text-green-300">
             Avec Pixiole, ton assistant de programmation
           </div>
         </div>

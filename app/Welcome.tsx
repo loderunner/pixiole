@@ -11,13 +11,13 @@ type Props = {
 export default function Welcome({ onSubmit }: Props) {
   const [description, setDescription] = useState('');
   return (
-    <div className="mx-auto mt-20 flex size-full max-w-4xl flex-col items-center gap-8 p-6">
+    <div className="mx-auto mt-20 flex max-w-4xl flex-col items-center gap-8 p-6">
       <div className="terminal-window w-full max-w-2xl p-8">
         <div className="mb-8 text-center">
           <div className="glow-text mb-2 text-2xl font-bold">
             {'>>> PIXIOLE TERMINAL v1.0 <<<'}
           </div>
-          <div className="text-sm text-green-400 opacity-75">
+          <div className="text-sm text-emerald-600 opacity-75 dark:text-green-400">
             Système d&apos;apprentissage de programmation initialisé...
           </div>
         </div>
@@ -25,12 +25,12 @@ export default function Welcome({ onSubmit }: Props) {
         <h1 className="terminal-text mb-6 text-center text-3xl leading-tight font-bold md:text-4xl">
           {'Salut, futur·e développeur·se! 🚀'}
           <br />
-          <span className="text-2xl text-green-400 md:text-3xl">
+          <span className="text-2xl text-emerald-600 md:text-3xl dark:text-green-400">
             {"Qu'est-ce qu'on code aujourd'hui?"}
           </span>
         </h1>
 
-        <div className="mb-8 space-y-2 text-center text-green-300">
+        <div className="mb-8 space-y-2 text-center text-emerald-700 dark:text-green-300">
           <div className="text-lg">
             ✨ Crée des jeux incroyables avec PICO-8
           </div>
@@ -48,7 +48,7 @@ export default function Welcome({ onSubmit }: Props) {
         />
 
         <div className="mt-6 text-center">
-          <div className="inline-block bg-gradient-to-r from-green-400 to-green-600 bg-clip-text font-bold text-transparent">
+          <div className="inline-block bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text font-bold text-transparent dark:from-green-400 dark:to-green-600">
             🎮 Prêt·e à devenir un·e pro du code? 🎮
           </div>
         </div>

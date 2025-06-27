@@ -34,7 +34,7 @@
   }
 }
 
-@keyframes glow {
+@keyframes glow-dark {
   0%,
   100% {
     text-shadow:
@@ -50,7 +50,21 @@
   }
 }
 
-@keyframes pulse-border {
+@keyframes glow-light {
+  0%,
+  100% {
+    text-shadow:
+      0 0 1px #2d7d32,
+      0 0 2px #2d7d32;
+  }
+  50% {
+    text-shadow:
+      0 0 2px #2d7d32,
+      0 0 4px #2d7d32;
+  }
+}
+
+@keyframes pulse-border-dark {
   0%,
   100% {
     border-color: #22dd77;
@@ -59,6 +73,18 @@
   50% {
     border-color: #33ee88;
     box-shadow: 0 0 15px #22dd7780;
+  }
+}
+
+@keyframes pulse-border-light {
+  0%,
+  100% {
+    border-color: #2d7d32;
+    box-shadow: 0 0 5px #2d7d3250;
+  }
+  50% {
+    border-color: #388e3c;
+    box-shadow: 0 0 15px #2d7d3280;
   }
 }
 
@@ -82,13 +108,23 @@
   }
 }
 
-/* Base styles */
+/* Base styles - Dark Mode */
 html {
   background: #111111;
   background-image:
     radial-gradient(circle at 20% 20%, #1a2a1a 0%, transparent 50%),
     radial-gradient(circle at 80% 80%, #1a3322 0%, transparent 50%),
     radial-gradient(circle at 40% 40%, #1a2a1a 0%, transparent 50%);
+  min-height: 100vh;
+}
+
+/* Base styles - Light Mode */
+html:not(.dark) {
+  background: #f8f9fa;
+  background-image:
+    radial-gradient(circle at 20% 20%, #e8f5e8 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, #e1f2e1 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, #e8f5e8 0%, transparent 50%);
   min-height: 100vh;
 }
 
@@ -99,7 +135,13 @@ body {
   overflow-x: hidden;
 }
 
-/* Terminal window styling */
+/* Light mode body */
+html:not(.dark) body {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e8f5e8 50%, #f8f9fa 100%);
+  color: #2d5016;
+}
+
+/* Terminal window styling - Dark Mode */
 .terminal-window {
   background: rgba(17, 17, 17, 0.95);
   border: 2px solid #22dd77;
@@ -111,17 +153,41 @@ body {
   animation: slide-in 0.5s ease-out;
 }
 
-/* Glowing text effects */
-.glow-text {
-  animation: glow 2s ease-in-out infinite alternate;
+/* Terminal window styling - Light Mode */
+html:not(.dark) .terminal-window {
+  background: rgba(248, 249, 250, 0.95);
+  border: 2px solid #2d7d32;
+  border-radius: 12px;
+  box-shadow:
+    0 0 20px #2d7d3230,
+    inset 0 0 20px rgba(45, 125, 50, 0.1);
+  backdrop-filter: blur(10px);
+  animation: slide-in 0.5s ease-out;
 }
 
+/* Glowing text effects - Dark Mode */
+.glow-text {
+  animation: glow-dark 2s ease-in-out infinite alternate;
+}
+
+/* Glowing text effects - Light Mode */
+html:not(.dark) .glow-text {
+  animation: glow-light 2s ease-in-out infinite alternate;
+}
+
+/* Terminal text - Dark Mode */
 .terminal-text {
   color: #22dd77;
   text-shadow: 0 0 5px #22dd77;
 }
 
-/* Button styling */
+/* Terminal text - Light Mode */
+html:not(.dark) .terminal-text {
+  color: #2d7d32;
+  text-shadow: 0 0 1px #2d7d32;
+}
+
+/* Button styling - Dark Mode */
 .terminal-button {
   background: linear-gradient(45deg, #1a3322, #225544);
   border: 2px solid #22dd77;
@@ -143,6 +209,20 @@ body {
   transform: translateY(-2px);
 }
 
+/* Button styling - Light Mode */
+html:not(.dark) .terminal-button {
+  background: linear-gradient(45deg, #e8f5e8, #c8e6c8);
+  border: 2px solid #2d7d32;
+  color: #1b5e20;
+  text-shadow: 0 0 1px #2d7d32;
+}
+
+html:not(.dark) .terminal-button:hover {
+  background: linear-gradient(45deg, #c8e6c8, #a5d6a7);
+  box-shadow: 0 0 20px #2d7d3250;
+  transform: translateY(-2px);
+}
+
 .terminal-button:active {
   transform: translateY(0);
 }
@@ -152,7 +232,7 @@ body {
   cursor: not-allowed;
 }
 
-/* Specific styling for hamburger button */
+/* Specific styling for hamburger button - Dark Mode */
 .hamburger-button {
   background: linear-gradient(45deg, #1a3322, #225544);
   border: 2px solid #22dd77;
@@ -181,11 +261,25 @@ body {
   transform: translateY(-2px);
 }
 
+/* Hamburger button - Light Mode */
+html:not(.dark) .hamburger-button {
+  background: linear-gradient(45deg, #e8f5e8, #c8e6c8);
+  border: 2px solid #2d7d32;
+  color: #1b5e20;
+  text-shadow: 0 0 1px #2d7d32;
+}
+
+html:not(.dark) .hamburger-button:hover {
+  background: linear-gradient(45deg, #c8e6c8, #a5d6a7);
+  box-shadow: 0 0 20px #2d7d3250;
+  transform: translateY(-2px);
+}
+
 .hamburger-button:active {
   transform: translateY(0);
 }
 
-/* Shine effect for buttons */
+/* Shine effect for buttons - Dark Mode */
 .terminal-button::before,
 .hamburger-button::before {
   content: '';
@@ -203,12 +297,23 @@ body {
   transition: left 0.5s;
 }
 
+/* Shine effect for buttons - Light Mode */
+html:not(.dark) .terminal-button::before,
+html:not(.dark) .hamburger-button::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+}
+
 .terminal-button:hover::before,
 .hamburger-button:hover::before {
   left: 100%;
 }
 
-/* Input styling */
+/* Input styling - Dark Mode */
 .terminal-input {
   background: rgba(17, 17, 17, 0.8);
   border: 2px solid #22dd77;
@@ -218,7 +323,7 @@ body {
   font-family: var(--font-mono);
   font-size: 16px;
   box-shadow: inset 0 0 10px rgba(34, 221, 119, 0.1);
-  animation: pulse-border 3s ease-in-out infinite;
+  animation: pulse-border-dark 3s ease-in-out infinite;
 }
 
 .terminal-input:focus {
@@ -233,7 +338,32 @@ body {
   opacity: 0.7;
 }
 
-/* Sidebar styling */
+/* Input styling - Light Mode */
+html:not(.dark) .terminal-input {
+  background: rgba(248, 249, 250, 0.8);
+  border: 2px solid #2d7d32;
+  border-radius: 8px;
+  color: #1b5e20;
+  padding: 16px;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  box-shadow: inset 0 0 10px rgba(45, 125, 50, 0.1);
+  animation: pulse-border-light 3s ease-in-out infinite;
+}
+
+html:not(.dark) .terminal-input:focus {
+  outline: none;
+  box-shadow:
+    0 0 20px #2d7d3250,
+    inset 0 0 20px rgba(45, 125, 50, 0.2);
+}
+
+html:not(.dark) .terminal-input::placeholder {
+  color: #4a7c59;
+  opacity: 0.7;
+}
+
+/* Sidebar styling - Dark Mode */
 .terminal-sidebar {
   background: rgba(17, 17, 17, 0.95);
   border-right: 2px solid #22dd77;
@@ -243,15 +373,40 @@ body {
   backdrop-filter: blur(15px);
 }
 
+/* Sidebar styling - Light Mode */
+html:not(.dark) .terminal-sidebar {
+  background: rgba(248, 249, 250, 0.95);
+  border-right: 2px solid #2d7d32;
+  box-shadow:
+    0 0 30px #2d7d3220,
+    inset 0 0 30px rgba(45, 125, 50, 0.1);
+  backdrop-filter: blur(15px);
+}
+
 @layer components {
   .tutorial {
     details {
-      @apply rounded-md border bg-gray-900/80 p-4;
+      @apply rounded-md border p-4;
       border-color: #22dd77;
       box-shadow: 0 0 10px #22dd7730;
+      background: rgba(17, 17, 17, 0.8);
+
       summary {
         @apply font-light italic;
         color: #66bb88;
+      }
+    }
+  }
+
+  /* Tutorial light mode */
+  html:not(.dark) .tutorial {
+    details {
+      border-color: #2d7d32;
+      box-shadow: 0 0 10px #2d7d3230;
+      background: rgba(248, 249, 250, 0.8);
+
+      summary {
+        color: #4a7c59;
       }
     }
   }
@@ -271,13 +426,27 @@ body {
     }
   }
 
-  /* Regular code blocks styling */
+  /* Code blocks light mode */
+  html:not(.dark) .shiki.has-diff {
+    background: rgba(248, 249, 250, 0.9) !important;
+    border: 1px solid #2d7d32;
+    box-shadow: 0 0 10px #2d7d3230;
+  }
+
+  /* Regular code blocks styling - Dark Mode */
   .shiki:not(.has-diff) {
     background: rgba(17, 17, 17, 0.9) !important;
     border: 1px solid #22dd77;
     border-radius: 8px;
     box-shadow: 0 0 10px #22dd7730;
     padding: 16px;
+  }
+
+  /* Regular code blocks styling - Light Mode */
+  html:not(.dark) .shiki:not(.has-diff) {
+    background: rgba(248, 249, 250, 0.9) !important;
+    border: 1px solid #2d7d32;
+    box-shadow: 0 0 10px #2d7d3230;
   }
 
   /* Ensure all code lines have consistent background */
@@ -290,7 +459,7 @@ body {
     background: transparent !important;
   }
 
-  /* Scrollbar styling */
+  /* Scrollbar styling - Dark Mode */
   ::-webkit-scrollbar {
     width: 8px;
   }
@@ -308,9 +477,23 @@ body {
   ::-webkit-scrollbar-thumb:hover {
     background: #33ee88;
   }
+
+  /* Scrollbar styling - Light Mode */
+  html:not(.dark) ::-webkit-scrollbar-track {
+    background: #f8f9fa;
+  }
+
+  html:not(.dark) ::-webkit-scrollbar-thumb {
+    background: #2d7d32;
+    box-shadow: 0 0 5px #2d7d3250;
+  }
+
+  html:not(.dark) ::-webkit-scrollbar-thumb:hover {
+    background: #388e3c;
+  }
 }
 
-/* Fun matrix-like background elements */
+/* Fun matrix-like background elements - Dark Mode */
 .matrix-bg::before {
   content: '';
   position: fixed;
@@ -322,6 +505,11 @@ body {
   animation: matrix 4s linear infinite;
   pointer-events: none;
   z-index: -1;
+}
+
+/* Matrix background - Light Mode */
+html:not(.dark) .matrix-bg::before {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232d7d32' fill-opacity='0.03'%3E%3Ctext x='30' y='30' text-anchor='middle' font-family='monospace' font-size='20'%3E%3C%3E%3C/%3E%3C/text%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
 /* Responsive design */

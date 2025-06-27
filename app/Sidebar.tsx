@@ -1,6 +1,12 @@
 'use client';
 
-import { ChatCircleIcon, PlusIcon, XIcon } from '@phosphor-icons/react';
+import {
+  ChatCircleIcon,
+  MoonIcon,
+  PlusIcon,
+  SunIcon,
+  XIcon,
+} from '@phosphor-icons/react';
 import Link from 'next/link';
 
 import { useChats } from '@/src/api/hooks';
@@ -8,9 +14,16 @@ import { useChats } from '@/src/api/hooks';
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  isDark: boolean;
+  onToggleTheme: () => void;
 };
 
-export default function Sidebar({ isOpen, onClose }: Props) {
+export default function Sidebar({
+  isOpen,
+  onClose,
+  isDark,
+  onToggleTheme,
+}: Props) {
   const { chats, isLoading } = useChats();
 
   return (
@@ -31,7 +44,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
       >
         <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-emerald-500/50 bg-gray-900/50 p-4">
+          <div className="flex items-center justify-between border-b border-emerald-600/50 bg-slate-100/50 p-4 dark:border-emerald-500/50 dark:bg-gray-900/50">
             <h2 className="terminal-text glow-text text-lg font-bold">
               PIXIOLE SESSIONS
             </h2>
@@ -44,7 +57,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
           </div>
 
           {/* New Chat Button */}
-          <div className="border-b border-emerald-500/30 bg-gray-900/30 p-4">
+          <div className="border-b border-emerald-600/30 bg-slate-100/30 p-4 dark:border-emerald-500/30 dark:bg-gray-900/30">
             <Link
               href="/"
               onClick={onClose}
@@ -56,13 +69,13 @@ export default function Sidebar({ isOpen, onClose }: Props) {
           </div>
 
           {/* Chat List */}
-          <div className="flex-1 overflow-y-auto bg-gray-900/20">
+          <div className="flex-1 overflow-y-auto bg-slate-100/20 dark:bg-gray-900/20">
             {isLoading ? (
-              <div className="p-4 text-center text-emerald-400">
+              <div className="p-4 text-center text-emerald-600 dark:text-emerald-400">
                 <div className="animate-pulse">Chargement des sessions...</div>
               </div>
             ) : chats.length === 0 ? (
-              <div className="p-4 text-center text-emerald-300/70">
+              <div className="p-4 text-center text-emerald-700 dark:text-emerald-300/70">
                 <div className="mb-2 text-4xl">🚀</div>
                 <div>Aucune session</div>
                 <div className="mt-2 text-sm opacity-60">
@@ -76,14 +89,14 @@ export default function Sidebar({ isOpen, onClose }: Props) {
                     key={chat.id}
                     href={`/chat/${chat.id}`}
                     onClick={onClose}
-                    className="mb-2 flex w-full items-center gap-3 rounded-lg border border-transparent p-3 text-left transition-all duration-200 hover:border-emerald-500/30 hover:bg-emerald-500/10 hover:shadow-md hover:shadow-emerald-500/20"
+                    className="mb-2 flex w-full items-center gap-3 rounded-lg border border-transparent p-3 text-left transition-all duration-200 hover:border-emerald-600/30 hover:bg-emerald-600/10 hover:shadow-md hover:shadow-emerald-600/20 dark:hover:border-emerald-500/30 dark:hover:bg-emerald-500/10 dark:hover:shadow-emerald-500/20"
                   >
-                    <ChatCircleIcon className="h-5 w-5 text-emerald-400" />
+                    <ChatCircleIcon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                     <div className="min-w-0 flex-1">
-                      <div className="truncate text-sm font-medium text-emerald-300">
+                      <div className="truncate text-sm font-medium text-emerald-700 dark:text-emerald-300">
                         {chat.title ?? 'Session sans titre'}
                       </div>
-                      <div className="text-xs text-emerald-400/60">
+                      <div className="text-xs text-emerald-600/60 dark:text-emerald-400/60">
                         {new Date(chat.updatedAt).toLocaleDateString('fr-FR')}
                       </div>
                     </div>
@@ -93,10 +106,26 @@ export default function Sidebar({ isOpen, onClose }: Props) {
             )}
           </div>
 
-          {/* Footer */}
-          <div className="border-t border-emerald-500/30 bg-gray-900/50 p-4">
-            <div className="text-center text-xs text-emerald-400/60">
-              🎮 Powered by Pixiole AI 🎮
+          {/* Footer with theme toggle */}
+          <div className="border-t border-emerald-600/30 bg-slate-100/50 p-4 dark:border-emerald-500/30 dark:bg-gray-900/50">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex-1 text-center text-xs text-emerald-600/60 dark:text-emerald-400/60">
+                🎮 Powered by Pixiole AI 🎮
+              </div>
+              <button
+                onClick={onToggleTheme}
+                className="hamburger-button"
+                aria-label="Toggle theme"
+                title={
+                  isDark ? 'Passer en mode clair' : 'Passer en mode sombre'
+                }
+              >
+                {isDark ? (
+                  <SunIcon className="h-5 w-5" />
+                ) : (
+                  <MoonIcon className="h-5 w-5" />
+                )}
+              </button>
             </div>
           </div>
         </div>

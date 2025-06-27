@@ -1,37 +1,76 @@
 'use client';
 
-import { ListIcon } from '@phosphor-icons/react';
-import { PropsWithChildren, useState } from 'react';
+import { List } from '@phosphor-icons/react';
+import { useEffect, useState } from 'react';
 
 import Sidebar from './Sidebar';
 
 import SWRProvider from '@/src/SWRProvider';
 import { ProjectProvider } from '@/src/project';
 
-export default function ClientLayout({ children }: PropsWithChildren) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+type Props = {
+  children: React.ReactNode;
+};
+
+export default function ClientLayout({ children }: Props) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isDark, setIsDark] = useState(true); // Default to dark mode
+
+  // Initialize theme from localStorage or system preference
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia(
+      '(prefers-color-scheme: dark)',
+    ).matches;
+
+    const shouldBeDark =
+      savedTheme === 'dark' || (savedTheme === null && prefersDark);
+    setIsDark(shouldBeDark);
+
+    if (shouldBeDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newIsDark = !isDark;
+    setIsDark(newIsDark);
+
+    if (newIsDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
 
   return (
     <SWRProvider>
       <ProjectProvider>
-        {/* Floating hamburger button */}
-        {!isSidebarOpen && (
-          <button
-            onClick={() => setIsSidebarOpen(true)}
-            className="hamburger-button fixed top-4 left-4 z-30 shadow-lg"
-          >
-            <ListIcon className="h-6 w-6" />
-          </button>
-        )}
+        <div className="relative flex h-screen w-full flex-row">
+          {/* Header with just hamburger button */}
+          <div className="fixed top-4 left-4 z-30">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="hamburger-button"
+              aria-label="Open menu"
+            >
+              <List className="text-xl" />
+            </button>
+          </div>
 
-        {/* Main content */}
-        <main className="flex h-full flex-col overflow-hidden">{children}</main>
+          <Sidebar
+            isOpen={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+            isDark={isDark}
+            onToggleTheme={toggleTheme}
+          />
 
-        {/* Sidebar */}
-        <Sidebar
-          isOpen={isSidebarOpen}
-          onClose={() => setIsSidebarOpen(false)}
-        />
+          <main className="size-full pt-16">{children}</main>
+        </div>
       </ProjectProvider>
     </SWRProvider>
   );
