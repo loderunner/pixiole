@@ -1,4 +1,4 @@
-import useSWR, { mutate } from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import useSWRMutation from 'swr/mutation';
 import type { ZodSchema } from 'zod';
 
@@ -66,6 +66,7 @@ export function useChatMessages(chatId: string) {
  * Hook to create a new chat using SWR mutation
  */
 export function useCreateChat() {
+  const { mutate } = useSWRConfig();
   const { trigger, isMutating, error } = useSWRMutation(
     '/api/chats',
     async (url: string, { arg }: { arg: CreateChatRequest }) => {
@@ -112,6 +113,7 @@ export function useChats() {
  * Hook to create a new message using SWR mutation
  */
 export function useCreateMessage(chatId: string) {
+  const { mutate } = useSWRConfig();
   const { trigger, isMutating, error } = useSWRMutation(
     `/api/chats/${chatId}/messages`,
     async (url: string, { arg }: { arg: CreateMessageRequest }) => {

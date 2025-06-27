@@ -94,5 +94,5 @@ export async function POST(
     updatedAt: newChat.updatedAt.toISOString(),
   });
 
-  return NextResponse.json(response);
+  return NextResponse.json(response, { status: 201 });
 }

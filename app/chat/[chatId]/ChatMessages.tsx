@@ -14,10 +14,7 @@ import { rehypeDiffPlugin } from '@/src/rehype-diff-plugin';
 
 function UserMessage({ message }: { message: Message }) {
   return (
-    <div
-      key={message.id}
-      className="flex flex-row items-start gap-2 rounded-md bg-gray-200 p-4"
-    >
+    <div className="flex flex-row items-start gap-2 rounded-md bg-gray-200 p-4">
       <div className="rounded-full bg-gray-800 p-2 text-white">
         <StudentIcon className="text-2xl" />
       </div>
@@ -33,26 +30,27 @@ const highlighter = await createHighlighterCore({
 });
 
 function AssistantMessage({ message }: { message: Message }) {
+  const content = useMemo(() => {
+    return (
+      <MarkdownHooks
+        rehypePlugins={[
+          [rehypeRaw],
+          [rehypeDiffPlugin],
+          [
+            rehypeShikiFromHighlighter,
+            highlighter,
+            { theme: 'nord', transformers: [transformerNotationDiff()] },
+          ],
+        ]}
+      >
+        {message.content}
+      </MarkdownHooks>
+    );
+  }, [message.content]);
+
   return (
-    <div
-      key={message.id}
-      className="prose tutorial prose-li:my-0 max-w-none p-2"
-    >
-      <div className="font-serif">
-        <MarkdownHooks
-          rehypePlugins={[
-            [rehypeRaw],
-            [rehypeDiffPlugin],
-            [
-              rehypeShikiFromHighlighter,
-              highlighter,
-              { theme: 'nord', transformers: [transformerNotationDiff()] },
-            ],
-          ]}
-        >
-          {message.content}
-        </MarkdownHooks>
-      </div>
+    <div className="prose tutorial prose-li:my-0 max-w-none p-2">
+      <div className="font-serif">{content}</div>
     </div>
   );
 }
@@ -72,6 +70,7 @@ export default function ChatMessages({ className, messages, ref }: Props) {
       ),
     );
   }, [messages]);
+
   return (
     <div className={className} ref={ref}>
       {messageElements}

@@ -84,5 +84,5 @@ export async function POST(
     createdAt: now.toISOString(),
   });
 
-  return NextResponse.json(response);
+  return NextResponse.json(response, { status: 201 });
 }

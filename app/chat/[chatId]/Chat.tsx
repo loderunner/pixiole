@@ -1,5 +1,6 @@
 'use client';
 
+import throttle from 'lodash.throttle';
 import { useEffect, useMemo, useRef } from 'react';
 
 import ChatMessages from './ChatMessages';
@@ -14,6 +15,13 @@ type Props = {
   chatId: string;
   title: string;
 };
+
+const scrollToBottom = throttle((element: HTMLElement) => {
+  element.scrollTo({
+    top: element.scrollHeight,
+    behavior: 'smooth',
+  });
+}, 500);
 
 function createTagHandlers(
   createFile: (name: string, content: string) => void,
@@ -103,6 +111,7 @@ export default function Chat({ chatId, title }: Props) {
     stop,
   } = useStreamChat({
     tagHandlers,
+    experimental_throttle: 50,
     onFinish: async (message) => {
       if (message.role === 'assistant') {
         const requestBody: CreateMessageRequest = {
@@ -171,6 +180,13 @@ export default function Chat({ chatId, title }: Props) {
     handleSubmit(e);
   };
 
+  const messagesRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (messagesRef.current !== null) {
+      scrollToBottom(messagesRef.current);
+    }
+  }, []);
+
   // TODO: Add a loading state
   // TODO: Add a error state
 
@@ -180,6 +196,7 @@ export default function Chat({ chatId, title }: Props) {
       <ChatMessages
         className="min-h-0 grow overflow-auto"
         messages={messages}
+        ref={messagesRef}
       />
       <div className="py-4">
         <ChatArea

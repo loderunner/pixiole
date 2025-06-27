@@ -85,9 +85,6 @@
       "esbuild",
       "sharp",
       "unrs-resolver"
-    ],
-    "ignoredBuiltDependencies": [
-      "better-sqlite3"
     ]
   }
 }
