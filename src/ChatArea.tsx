@@ -34,7 +34,7 @@ export default function ChatArea({
         count++;
       }
     }
-    return count;
+    return Math.max(count, 2);
   }, [value]);
 
   const onKeyDown = useCallback<KeyboardEventHandler<HTMLTextAreaElement>>(
@@ -52,13 +52,13 @@ export default function ChatArea({
   return (
     <div
       className={twMerge(
-        'flex flex-row items-start justify-start gap-3 rounded-lg border border-gray-300 p-3 transition has-focus:border-gray-400 has-focus:shadow-xl',
+        'terminal-window flex flex-row items-start justify-start gap-4 p-4 transition-all duration-300',
         className,
       )}
     >
       <textarea
         ref={ref}
-        className="grow resize-none p-3 outline-none"
+        className="terminal-input min-h-[60px] grow resize-none outline-none"
         value={value}
         rows={rows}
         placeholder={placeholder}
@@ -66,11 +66,11 @@ export default function ChatArea({
         onKeyDown={onKeyDown}
       ></textarea>
       <button
-        className="rounded-full bg-gray-700 p-3 text-white hover:not-disabled:bg-gray-500 active:bg-gray-700 disabled:opacity-50"
+        className="terminal-button flex-shrink-0 rounded-lg px-4 py-3"
         disabled={value === undefined || value === ''}
         onClick={onSubmit}
       >
-        <PencilSimpleLineIcon className="text-2xl" />
+        <PencilSimpleLineIcon className="text-xl" />
       </button>
     </div>
   );

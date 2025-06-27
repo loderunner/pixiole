@@ -191,16 +191,35 @@ export default function Chat({ chatId, title }: Props) {
   // TODO: Add a error state
 
   return (
-    <div className="mx-auto flex size-full max-w-3xl flex-col items-stretch">
-      <h1 className="py-6 text-center text-2xl font-bold">{title}</h1>
-      <ChatMessages
-        className="min-h-0 grow overflow-auto"
-        messages={messages}
-        ref={messagesRef}
-      />
-      <div className="py-4">
+    <div className="mx-auto flex h-full max-w-4xl flex-col">
+      {/* Terminal-style header */}
+      <div className="terminal-window m-4 mb-2 flex-shrink-0 p-4">
+        <div className="text-center">
+          <div className="mb-2 text-sm text-green-400 opacity-75">
+            {'>>> SESSION ACTIVE <<<'}
+          </div>
+          <h1 className="terminal-text glow-text text-xl font-bold md:text-2xl">
+            🎮 {title} 🎮
+          </h1>
+          <div className="mt-2 text-sm text-green-300 opacity-60">
+            Avec Pixiole, ton assistant de programmation
+          </div>
+        </div>
+      </div>
+
+      {/* Messages area - takes remaining space and scrolls */}
+      <div className="terminal-window mx-4 my-2 min-h-0 flex-1 overflow-hidden p-4">
+        <ChatMessages
+          className="h-full overflow-auto pr-2"
+          messages={messages}
+          ref={messagesRef}
+        />
+      </div>
+
+      {/* Input area */}
+      <div className="mx-4 mt-2 mb-4 flex-shrink-0">
         <ChatArea
-          placeholder="Demande ce que tu veux à Pixiole"
+          placeholder="💬 Demande ce que tu veux à Pixiole..."
           value={input}
           onChange={handleInputChange}
           onSubmit={handleChatSubmit}

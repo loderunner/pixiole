@@ -5,30 +5,342 @@
 
 @theme {
   --font-sans:
-    'Inter Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    'Inter Variable', 'Courier New', monospace, ui-sans-serif, system-ui,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
   --font-serif:
     'Bitter Variable', ui-serif, Georgia, Cambria, 'Times New Roman', Times,
     serif;
+  --font-mono:
+    'Fira Code', Inconsolata, 'Roboto Mono', 'SF Mono', 'Menlo', Monaco,
+    'Courier New', monospace;
+}
+
+/* Terminal-inspired background with animated matrix effect */
+@keyframes matrix {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    text-shadow:
+      0 0 5px #22dd77,
+      0 0 10px #22dd77,
+      0 0 15px #22dd77;
+  }
+  50% {
+    text-shadow:
+      0 0 10px #22dd77,
+      0 0 20px #22dd77,
+      0 0 30px #22dd77;
+  }
+}
+
+@keyframes pulse-border {
+  0%,
+  100% {
+    border-color: #22dd77;
+    box-shadow: 0 0 5px #22dd7750;
+  }
+  50% {
+    border-color: #33ee88;
+    box-shadow: 0 0 15px #22dd7780;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shine {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* Base styles */
+html {
+  background: #111111;
+  background-image:
+    radial-gradient(circle at 20% 20%, #1a2a1a 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, #1a3322 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, #1a2a1a 0%, transparent 50%);
+  min-height: 100vh;
+}
+
+body {
+  background: linear-gradient(135deg, #111111 0%, #1a2a1a 50%, #111111 100%);
+  color: #88dd99;
+  font-family: var(--font-mono);
+  overflow-x: hidden;
+}
+
+/* Terminal window styling */
+.terminal-window {
+  background: rgba(17, 17, 17, 0.95);
+  border: 2px solid #22dd77;
+  border-radius: 12px;
+  box-shadow:
+    0 0 20px #22dd7730,
+    inset 0 0 20px rgba(34, 221, 119, 0.1);
+  backdrop-filter: blur(10px);
+  animation: slide-in 0.5s ease-out;
+}
+
+/* Glowing text effects */
+.glow-text {
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+.terminal-text {
+  color: #22dd77;
+  text-shadow: 0 0 5px #22dd77;
+}
+
+/* Button styling */
+.terminal-button {
+  background: linear-gradient(45deg, #1a3322, #225544);
+  border: 2px solid #22dd77;
+  color: #88dd99;
+  text-shadow: 0 0 5px #22dd77;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-family: var(--font-mono);
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.terminal-button:hover {
+  background: linear-gradient(45deg, #225544, #337766);
+  box-shadow: 0 0 20px #22dd7750;
+  transform: translateY(-2px);
+}
+
+.terminal-button:active {
+  transform: translateY(0);
+}
+
+.terminal-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Specific styling for hamburger button */
+.hamburger-button {
+  background: linear-gradient(45deg, #1a3322, #225544);
+  border: 2px solid #22dd77;
+  color: #88dd99;
+  text-shadow: 0 0 5px #22dd77;
+  border-radius: 8px;
+  padding: 10px;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.hamburger-button:hover {
+  background: linear-gradient(45deg, #225544, #337766);
+  box-shadow: 0 0 20px #22dd7750;
+  transform: translateY(-2px);
+}
+
+.hamburger-button:active {
+  transform: translateY(0);
+}
+
+/* Shine effect for buttons */
+.terminal-button::before,
+.hamburger-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.terminal-button:hover::before,
+.hamburger-button:hover::before {
+  left: 100%;
+}
+
+/* Input styling */
+.terminal-input {
+  background: rgba(17, 17, 17, 0.8);
+  border: 2px solid #22dd77;
+  border-radius: 8px;
+  color: #88dd99;
+  padding: 16px;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  box-shadow: inset 0 0 10px rgba(34, 221, 119, 0.1);
+  animation: pulse-border 3s ease-in-out infinite;
+}
+
+.terminal-input:focus {
+  outline: none;
+  box-shadow:
+    0 0 20px #22dd7750,
+    inset 0 0 20px rgba(34, 221, 119, 0.2);
+}
+
+.terminal-input::placeholder {
+  color: #66bb77;
+  opacity: 0.7;
+}
+
+/* Sidebar styling */
+.terminal-sidebar {
+  background: rgba(17, 17, 17, 0.95);
+  border-right: 2px solid #22dd77;
+  box-shadow:
+    0 0 30px #22dd7720,
+    inset 0 0 30px rgba(34, 221, 119, 0.1);
+  backdrop-filter: blur(15px);
 }
 
 @layer components {
   .tutorial {
     details {
-      @apply rounded-md bg-gray-200 p-4;
+      @apply rounded-md border bg-gray-900/80 p-4;
+      border-color: #22dd77;
+      box-shadow: 0 0 10px #22dd7730;
       summary {
-        @apply font-light text-gray-900 italic;
+        @apply font-light italic;
+        color: #66bb88;
       }
     }
   }
 
   .shiki.has-diff {
+    background: rgba(17, 17, 17, 0.9) !important;
+    border: 1px solid #22dd77;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #22dd7730;
+
     .line.diff.remove {
-      @apply bg-rose-500/40;
+      @apply bg-red-500/40;
     }
 
     .line.diff.add {
       @apply bg-green-500/40;
     }
+  }
+
+  /* Regular code blocks styling */
+  .shiki:not(.has-diff) {
+    background: rgba(17, 17, 17, 0.9) !important;
+    border: 1px solid #22dd77;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #22dd7730;
+    padding: 16px;
+  }
+
+  /* Ensure all code lines have consistent background */
+  .shiki .line {
+    background: transparent !important;
+  }
+
+  /* Code block container consistency */
+  .shiki code {
+    background: transparent !important;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #111111;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #22dd77;
+    border-radius: 4px;
+    box-shadow: 0 0 5px #22dd7750;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #33ee88;
+  }
+}
+
+/* Fun matrix-like background elements */
+.matrix-bg::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2322dd77' fill-opacity='0.05'%3E%3Ctext x='30' y='30' text-anchor='middle' font-family='monospace' font-size='20'%3E%3C%3E%3C/%3E%3C/text%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  animation: matrix 4s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .terminal-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .hamburger-button {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 8px;
+  }
+
+  .terminal-input {
+    padding: 12px;
+    font-size: 14px;
   }
 }

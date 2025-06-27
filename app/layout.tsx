@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html>
-      <body className="flex h-dvh w-dvw flex-col">
+      <body className="matrix-bg flex h-dvh w-dvw flex-col">
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
