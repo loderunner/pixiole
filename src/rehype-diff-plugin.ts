@@ -114,7 +114,7 @@ function parseDiffContent(content: string): {
   return { lines: diffLines, metadata };
 }
 
-function createDiffElement(lines: DiffLine[]): Element {
+function createDiffElement(lines: DiffLine[], metadata: DiffMetadata): Element {
   // Convert diff lines to use Shiki's notation format
   const processedLines = lines.map((line) => {
     let content = line.content;
@@ -132,8 +132,8 @@ function createDiffElement(lines: DiffLine[]): Element {
   // Always use Lua as the language
   const languageClass = 'language-lua';
 
-  // Create a code element that will be processed by Shiki
-  return {
+  // Create the code block element
+  const codeElement: Element = {
     type: 'element',
     tagName: 'pre',
     properties: {},
@@ -151,6 +151,50 @@ function createDiffElement(lines: DiffLine[]): Element {
       },
     ],
   };
+
+  // Determine which filename to display (prefer newFilename, fallback to oldFilename)
+  const displayFilename = metadata.newFilename || metadata.oldFilename;
+
+  // If we have a filename, create a container with filename header + code block
+  if (displayFilename) {
+    return {
+      type: 'element',
+      tagName: 'div',
+      properties: { className: ['code-block-with-filename'] },
+      children: [
+        {
+          type: 'element',
+          tagName: 'div',
+          properties: { 
+            className: [
+              'filename-header',
+              'px-4',
+              'py-2',
+              'bg-gray-800',
+              'dark:bg-gray-700',
+              'text-gray-300',
+              'dark:text-gray-400',
+              'text-sm',
+              'font-mono',
+              'border-b',
+              'border-gray-600',
+              'dark:border-gray-500'
+            ] 
+          },
+          children: [
+            {
+              type: 'text',
+              value: displayFilename,
+            },
+          ],
+        },
+        codeElement,
+      ],
+    };
+  }
+
+  // If no filename, just return the code element
+  return codeElement;
 }
 
 export function rehypeDiffPlugin() {
@@ -179,8 +223,8 @@ export function rehypeDiffPlugin() {
 
           codeElement.children.forEach(extractText);
 
-          const { lines } = parseDiffContent(textContent);
-          const diffElement = createDiffElement(lines);
+          const { lines, metadata } = parseDiffContent(textContent);
+          const diffElement = createDiffElement(lines, metadata);
 
           // Replace the pre element with our custom diff element
           if (parent !== undefined && typeof index === 'number') {
