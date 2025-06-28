@@ -1,6 +1,6 @@
 'use client';
 
-import { List } from '@phosphor-icons/react';
+import { ListIcon } from '@phosphor-icons/react';
 import { useEffect, useState } from 'react';
 
 import Sidebar from './Sidebar';
@@ -58,7 +58,7 @@ export default function ClientLayout({ children }: Props) {
               className="hamburger-button"
               aria-label="Open menu"
             >
-              <List className="text-xl" />
+              <ListIcon className="text-xl" />
             </button>
           </div>
 
@@ -69,7 +69,7 @@ export default function ClientLayout({ children }: Props) {
             onToggleTheme={toggleTheme}
           />
 
-          <main className="size-full pt-16">{children}</main>
+          <main className="size-full">{children}</main>
         </div>
       </ProjectProvider>
     </SWRProvider>
