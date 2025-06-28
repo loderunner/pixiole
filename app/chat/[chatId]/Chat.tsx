@@ -1,7 +1,7 @@
 'use client';
 
 import throttle from 'lodash.throttle';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import ChatMessages from './ChatMessages';
 
@@ -26,6 +26,7 @@ const scrollToBottom = throttle((element: HTMLElement) => {
 function createTagHandlers(
   createFile: (name: string, content: string) => void,
   editFile: (name: string, content: string) => void,
+  setSuggestions: (suggestions: string[]) => void,
 ): TagHandlers {
   return {
     Thinking: {
@@ -41,6 +42,19 @@ function createTagHandlers(
     LessonPlan: {
       onOpen: () => '',
       onClose: () => '',
+    },
+    Suggestions: {
+      onOpen: () => '',
+      onClose: () => ['', ''],
+      onComplete: (content: string) => {
+        // Parse suggestions from content - each line is a suggestion
+        const suggestions = content
+          .split('\n')
+          .map((line) => line.trim())
+          .filter((line) => line.length > 0);
+
+        setSuggestions(suggestions);
+      },
     },
     CreateFile: {
       onOpen: () => '',
@@ -96,8 +110,11 @@ export default function Chat({ chatId, title }: Props) {
     error: messagesError,
   } = useChatMessages(chatId);
 
+  // State for storing suggestions
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+
   const tagHandlers = useMemo(
-    () => createTagHandlers(createFile, editFile),
+    () => createTagHandlers(createFile, editFile, setSuggestions),
     [createFile, editFile],
   );
 
@@ -105,6 +122,7 @@ export default function Chat({ chatId, title }: Props) {
     messages,
     setMessages,
     input,
+    setInput,
     handleInputChange,
     handleSubmit,
     reload,
@@ -123,6 +141,11 @@ export default function Chat({ chatId, title }: Props) {
       }
     },
   });
+
+  // Handle suggestion click
+  const handleSuggestionClick = (suggestion: string) => {
+    setInput(suggestion);
+  };
 
   // Populate chat with messages once loaded from SWR
   useEffect(() => {
@@ -176,6 +199,9 @@ export default function Chat({ chatId, title }: Props) {
       await createMessage(requestBody);
     }
 
+    // Clear suggestions when submitting
+    setSuggestions([]);
+
     // Continue with normal submit
     handleSubmit(e);
   };
@@ -216,13 +242,15 @@ export default function Chat({ chatId, title }: Props) {
         />
       </div>
 
-      {/* Input area */}
+      {/* Input area with integrated suggestions */}
       <div className="mx-4 mt-2 mb-4 flex-shrink-0">
         <ChatArea
           placeholder="💬 Demande ce que tu veux à Pixiole..."
           value={input}
           onChange={handleInputChange}
           onSubmit={handleChatSubmit}
+          suggestions={suggestions}
+          onSuggestionClick={handleSuggestionClick}
         />
       </div>
     </div>

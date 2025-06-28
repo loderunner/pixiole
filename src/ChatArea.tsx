@@ -16,6 +16,8 @@ type Props = PropsWithClassName<{
   onChange?: ChangeEventHandler<HTMLTextAreaElement>;
   onSubmit?: ReactEventHandler;
   placeholder: string;
+  suggestions?: string[];
+  onSuggestionClick?: (suggestion: string) => void;
 }>;
 
 export default function ChatArea({
@@ -24,6 +26,8 @@ export default function ChatArea({
   onChange,
   onSubmit,
   placeholder,
+  suggestions = [],
+  onSuggestionClick,
 }: Props) {
   const ref = useRef<HTMLTextAreaElement>(null);
 
@@ -52,26 +56,45 @@ export default function ChatArea({
   return (
     <div
       className={twMerge(
-        'terminal-window flex flex-row items-start justify-start gap-4 p-4 transition-all duration-300',
+        'terminal-window flex flex-col gap-3 p-4 transition-all duration-300',
         className,
       )}
     >
-      <textarea
-        ref={ref}
-        className="terminal-input min-h-[60px] grow resize-none outline-none"
-        value={value}
-        rows={rows}
-        placeholder={placeholder}
-        onChange={onChange}
-        onKeyDown={onKeyDown}
-      ></textarea>
-      <button
-        className="terminal-button flex-shrink-0 rounded-lg px-4 py-3"
-        disabled={value === undefined || value === ''}
-        onClick={onSubmit}
-      >
-        <PencilSimpleLineIcon className="text-xl" />
-      </button>
+      {/* Suggestion chips - only show if there are suggestions */}
+      {suggestions.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {suggestions.map((suggestion, index) => (
+            <button
+              key={index}
+              onClick={() => onSuggestionClick?.(suggestion)}
+              className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1.5 text-xs text-emerald-700 transition-all hover:scale-105 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:hover:bg-emerald-800/40"
+            >
+              <span className="text-xs">💡</span>
+              <span>{suggestion}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Input area */}
+      <div className="flex flex-row items-start justify-start gap-4">
+        <textarea
+          ref={ref}
+          className="terminal-input min-h-[60px] grow resize-none outline-none"
+          value={value}
+          rows={rows}
+          placeholder={placeholder}
+          onChange={onChange}
+          onKeyDown={onKeyDown}
+        ></textarea>
+        <button
+          className="terminal-button flex-shrink-0 rounded-lg px-4 py-3"
+          disabled={value === undefined || value === ''}
+          onClick={onSubmit}
+        >
+          <PencilSimpleLineIcon className="text-xl" />
+        </button>
+      </div>
     </div>
   );
 }
