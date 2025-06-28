@@ -1,6 +1,5 @@
 'use client';
 
-import throttle from 'lodash.throttle';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import ChatMessages from './ChatMessages';
@@ -15,13 +14,6 @@ type Props = {
   chatId: string;
   title: string;
 };
-
-const scrollToBottom = throttle((element: HTMLElement) => {
-  element.scrollTo({
-    top: element.scrollHeight,
-    behavior: 'smooth',
-  });
-}, 500);
 
 function createTagHandlers(
   createFile: (name: string, content: string) => void,
@@ -156,6 +148,16 @@ export default function Chat({ chatId, title }: Props) {
           createdAt: new Date(msg.createdAt),
         })),
       );
+
+      // Scroll to bottom after DOM has been updated with the messages
+      setTimeout(() => {
+        if (messagesRef.current !== null) {
+          messagesRef.current.scrollTo({
+            top: messagesRef.current.scrollHeight,
+            behavior: 'smooth',
+          });
+        }
+      }, 0);
     }
   }, [messagesLoading, apiMessages, messages.length, setMessages]);
 
@@ -207,11 +209,17 @@ export default function Chat({ chatId, title }: Props) {
   };
 
   const messagesRef = useRef<HTMLDivElement>(null);
+  const lastMessageHeight = useMemo(() => {
+    return messagesRef.current?.lastElementChild?.clientHeight ?? 0;
+  }, [messages]);
   useEffect(() => {
     if (messagesRef.current !== null) {
-      scrollToBottom(messagesRef.current);
+      messagesRef.current.scrollTo({
+        top: messagesRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
     }
-  }, []);
+  }, [lastMessageHeight]);
 
   // TODO: Add a loading state
   // TODO: Add a error state
