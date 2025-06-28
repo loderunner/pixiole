@@ -460,36 +460,13 @@ html:not(.dark) .terminal-sidebar {
   }
 
   /* Scrollbar styling - Dark Mode */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
 
-  ::-webkit-scrollbar-track {
-    background: #111111;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #22dd77;
-    border-radius: 4px;
-    box-shadow: 0 0 5px #22dd7750;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #33ee88;
-  }
-
-  /* Scrollbar styling - Light Mode */
-  html:not(.dark) ::-webkit-scrollbar-track {
-    background: #f8f9fa;
-  }
-
-  html:not(.dark) ::-webkit-scrollbar-thumb {
-    background: #2d7d32;
-    box-shadow: 0 0 5px #2d7d3250;
-  }
-
-  html:not(.dark) ::-webkit-scrollbar-thumb:hover {
-    background: #388e3c;
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #22dd77 #111111;
+    &:not(.dark) {
+      scrollbar-color: #2d7d32 #f8f9fa;
+    }
   }
 }
 
