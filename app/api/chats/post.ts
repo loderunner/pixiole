@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 
+import { prompt } from './prompt';
 import {
   CreateChatRequestSchema,
   CreateChatResponse,
@@ -54,7 +55,7 @@ export async function POST(
       try {
         const result = await generateText({
           model: openai('gpt-4.1'),
-          prompt: `Generate a short, creative title IN FRENCH (2-6 words) for a PICO-8 game development conversation based on this user message: "${initialMessage}". The title should be engaging and related to the specific game concept mentioned. The title MUST BE in French. Just return the title, nothing else.`,
+          prompt: prompt({ initialMessage }),
           maxTokens: 20,
         });
         finalTitle = result.text.trim().replace(/['"]/g, '');
