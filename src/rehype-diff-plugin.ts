@@ -114,7 +114,7 @@ function parseDiffContent(content: string): {
   return { lines: diffLines, metadata };
 }
 
-function createDiffElement(lines: DiffLine[]): Element {
+function createDiffElement(lines: DiffLine[], metadata: DiffMetadata): Element {
   // Convert diff lines to use Shiki's notation format
   const processedLines = lines.map((line) => {
     let content = line.content;
@@ -133,7 +133,7 @@ function createDiffElement(lines: DiffLine[]): Element {
   const languageClass = 'language-lua';
 
   // Create a code element that will be processed by Shiki
-  return {
+  const codeElement: Element = {
     type: 'element',
     tagName: 'pre',
     properties: {},
@@ -151,6 +151,107 @@ function createDiffElement(lines: DiffLine[]): Element {
       },
     ],
   };
+
+  // If we have filename information, create a container with filename header
+  const filename = metadata.newFilename || metadata.oldFilename;
+  if (filename) {
+    return {
+      type: 'element',
+      tagName: 'div',
+      properties: { className: ['code-block-with-filename'] },
+      children: [
+        {
+          type: 'element',
+          tagName: 'div',
+          properties: { className: ['code-filename'] },
+          children: [
+            {
+              type: 'text',
+              value: filename,
+            },
+          ],
+        },
+        codeElement,
+      ],
+    };
+  }
+
+  return codeElement;
+}
+
+function extractFilenameFromCodeBlock(textContent: string, className: string[]): string | null {
+  // Check for filename in language specification (e.g., "language-lua:filename.lua")
+  for (const cls of className) {
+    if (cls.startsWith('language-') && cls.includes(':')) {
+      const parts = cls.split(':');
+      if (parts.length > 1) {
+        return parts[1];
+      }
+    }
+  }
+
+  // Check for filename in first line comment patterns
+  const lines = textContent.split('\n');
+  if (lines.length > 0) {
+    const firstLine = lines[0].trim();
+    
+    // Check for patterns like: -- filename.lua or // filename.js
+    const commentMatch = firstLine.match(/^(?:--|\/\/|#)\s*(.+\.\w+)$/);
+    if (commentMatch) {
+      return commentMatch[1];
+    }
+  }
+
+  return null;
+}
+
+function createRegularCodeElement(textContent: string, className: string[]): Element {
+  const filename = extractFilenameFromCodeBlock(textContent, className);
+  
+  // Create the code element
+  const codeElement: Element = {
+    type: 'element',
+    tagName: 'pre',
+    properties: {},
+    children: [
+      {
+        type: 'element',
+        tagName: 'code',
+        properties: { className },
+        children: [
+          {
+            type: 'text',
+            value: textContent,
+          },
+        ],
+      },
+    ],
+  };
+
+  // If we have filename information, create a container with filename header
+  if (filename) {
+    return {
+      type: 'element',
+      tagName: 'div',
+      properties: { className: ['code-block-with-filename'] },
+      children: [
+        {
+          type: 'element',
+          tagName: 'div',
+          properties: { className: ['code-filename'] },
+          children: [
+            {
+              type: 'text',
+              value: filename,
+            },
+          ],
+        },
+        codeElement,
+      ],
+    };
+  }
+
+  return codeElement;
 }
 
 export function rehypeDiffPlugin() {
@@ -166,7 +267,7 @@ export function rehypeDiffPlugin() {
         const codeElement = node.children[0];
         const className = codeElement.properties?.className;
 
-        if (Array.isArray(className) && className.includes('language-diff')) {
+        if (Array.isArray(className)) {
           // Extract text content from the code element
           let textContent = '';
           function extractText(node: HastNode): void {
@@ -179,12 +280,25 @@ export function rehypeDiffPlugin() {
 
           codeElement.children.forEach(extractText);
 
-          const { lines } = parseDiffContent(textContent);
-          const diffElement = createDiffElement(lines);
+          if (className.includes('language-diff')) {
+            // Handle diff blocks
+            const { lines, metadata } = parseDiffContent(textContent);
+            const diffElement = createDiffElement(lines, metadata);
 
-          // Replace the pre element with our custom diff element
-          if (parent !== undefined && typeof index === 'number') {
-            parent.children[index] = diffElement;
+            // Replace the pre element with our custom diff element
+            if (parent !== undefined && typeof index === 'number') {
+              parent.children[index] = diffElement;
+            }
+          } else {
+            // Handle regular code blocks
+            const regularCodeElement = createRegularCodeElement(textContent, className);
+            
+            // Only replace if we found a filename
+            if (regularCodeElement.tagName === 'div' && regularCodeElement.properties?.className?.includes('code-block-with-filename')) {
+              if (parent !== undefined && typeof index === 'number') {
+                parent.children[index] = regularCodeElement;
+              }
+            }
           }
         }
       }
