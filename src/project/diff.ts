@@ -31,7 +31,7 @@ export function applyDiff(
     }
 
     return content;
-  } catch (error) {
+  } catch (_error) {
     return originalContent;
   }
 }

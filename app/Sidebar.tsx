@@ -115,7 +115,7 @@ export default function Sidebar({
               <button
                 onClick={onToggleTheme}
                 className="hamburger-button"
-                aria-label="Toggle theme"
+                aria-label="Basculer le thème"
                 title={
                   isDark ? 'Passer en mode clair' : 'Passer en mode sombre'
                 }

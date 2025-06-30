@@ -6,14 +6,15 @@ import ChatMessages from './ChatMessages';
 
 import type { CreateMessageRequest } from '@/app/api/chats/[chatId]/messages/types';
 import ChatArea from '@/src/ChatArea';
+import { PropsWithClassName } from '@/src/PropsWithClassName';
 import { useChatMessages, useCreateMessage } from '@/src/api/hooks';
 import { useProject } from '@/src/project';
 import { TagHandlers, useStreamChat } from '@/src/useStreamChat';
 
-type Props = {
+type Props = PropsWithClassName<{
   chatId: string;
   title: string;
-};
+}>;
 
 function createTagHandlers(
   createFile: (name: string, content: string) => Promise<void>,
@@ -93,7 +94,7 @@ function createTagHandlers(
   };
 }
 
-export default function Chat({ chatId, title }: Props) {
+export default function Chat({ className, chatId, title }: Props) {
   const { createFile, editFile } = useProject();
   const { createMessage } = useCreateMessage(chatId);
   const {
@@ -225,10 +226,10 @@ export default function Chat({ chatId, title }: Props) {
   // TODO: Add a error state
 
   return (
-    <div className="mx-auto flex h-full max-w-4xl flex-col">
+    <div className={`flex h-full flex-col ${className}`}>
       {/* Terminal-style header */}
       <div className="terminal-window m-4 mb-2 flex-shrink-0 p-4">
-        <div className="text-center">
+        <div className="relative text-center">
           <div className="mb-2 text-sm text-emerald-600 opacity-75 dark:text-green-400">
             {'>>> SESSION ACTIVE <<<'}
           </div>

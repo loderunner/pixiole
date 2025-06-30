@@ -199,7 +199,6 @@ html:not(.dark) .terminal-text {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  position: relative;
   overflow: hidden;
 }
 
@@ -243,7 +242,6 @@ html:not(.dark) .terminal-button:hover {
   font-family: var(--font-mono);
   cursor: pointer;
   transition: all 0.3s ease;
-  position: relative;
   overflow: hidden;
   width: 44px;
   height: 44px;
@@ -383,6 +381,18 @@ html:not(.dark) .terminal-sidebar {
   backdrop-filter: blur(15px);
 }
 
+/* Files panel styling (right side) - Dark Mode */
+.terminal-sidebar.files-panel {
+  border-right: none;
+  border-left: 2px solid #22dd77;
+}
+
+/* Files panel styling (right side) - Light Mode */
+html:not(.dark) .terminal-sidebar.files-panel {
+  border-right: none;
+  border-left: 2px solid #2d7d32;
+}
+
 @layer components {
   .tutorial {
     details {
@@ -467,6 +477,47 @@ html:not(.dark) .terminal-sidebar {
     &:not(.dark) {
       scrollbar-color: #2d7d32 #f8f9fa;
     }
+  }
+
+  /* Files panel syntax highlighting - Dark Mode */
+  .files-panel .shiki {
+    background: rgba(17, 17, 17, 0.9) !important;
+    border: 1px solid #22dd77;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #22dd7730;
+    padding: 16px;
+    margin: 0;
+  }
+
+  /* Files panel syntax highlighting - Light Mode */
+  html:not(.dark) .files-panel .shiki {
+    background: rgba(248, 249, 250, 0.9) !important;
+    border: 1px solid #2d7d32;
+    box-shadow: 0 0 10px #2d7d3230;
+  }
+
+  /* Files panel code styling consistency */
+  .files-panel .shiki .line {
+    background: transparent;
+  }
+
+  .files-panel .shiki code {
+    background: transparent;
+  }
+
+  /* Files panel pre element styling - Dark Mode */
+  .files-panel pre {
+    background: rgba(17, 17, 17, 0.8);
+    border: 1px solid #22dd77;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #22dd7730;
+  }
+
+  /* Files panel pre element styling - Light Mode */
+  html:not(.dark) .files-panel pre {
+    background: rgba(248, 249, 250, 0.8);
+    border: 1px solid #2d7d32;
+    box-shadow: 0 0 10px #2d7d3230;
   }
 }
 

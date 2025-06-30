@@ -53,8 +53,8 @@ export default function ClientLayout({ children }: Props) {
         <div className="fixed top-4 left-4 z-30">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="hamburger-button"
-            aria-label="Open menu"
+            className="hamburger-button relative"
+            aria-label="Ouvrir le menu"
           >
             <ListIcon className="text-xl" />
           </button>

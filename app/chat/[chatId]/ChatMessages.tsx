@@ -11,6 +11,7 @@ import { createHighlighterCore, createOnigurumaEngine } from 'shiki';
 
 import { PropsWithClassName } from '@/src/PropsWithClassName';
 import { rehypeDiffPlugin } from '@/src/rehype-diff-plugin';
+import { isDarkMode } from '@/src/syntax-highlighter';
 
 function UserMessage({ message }: { message: Message }) {
   return (
@@ -221,11 +222,7 @@ const highlighter = await createHighlighterCore({
 });
 
 function AssistantMessage({ message }: { message: Message }) {
-  // Detect if we're in dark mode by checking the document class
-  const isDark =
-    typeof document !== 'undefined'
-      ? document.documentElement.classList.contains('dark')
-      : true;
+  const isDark = isDarkMode();
 
   const content = useMemo(() => {
     return (
