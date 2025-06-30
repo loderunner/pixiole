@@ -16,8 +16,8 @@ type Props = {
 };
 
 function createTagHandlers(
-  createFile: (name: string, content: string) => void,
-  editFile: (name: string, content: string) => void,
+  createFile: (name: string, content: string) => Promise<void>,
+  editFile: (name: string, content: string) => Promise<void>,
   setSuggestions: (suggestions: string[]) => void,
 ): TagHandlers {
   return {
@@ -63,7 +63,7 @@ function createTagHandlers(
             codeEndIndex !== -1 &&
             codeEndIndex > codeStartIndex
           ) {
-            const fileContent = content.slice(codeStartIndex + 6, codeEndIndex); // +6 for "```lua\n";
+            const fileContent = content.slice(codeStartIndex + 7, codeEndIndex); // +6 for "```lua\n";
             createFile(name, fileContent);
           }
         }
@@ -84,7 +84,7 @@ function createTagHandlers(
             diffEndIndex !== -1 &&
             diffEndIndex > diffStartIndex
           ) {
-            const diffContent = content.slice(diffStartIndex + 7, diffEndIndex); // +7 for "```diff\n"
+            const diffContent = content.slice(diffStartIndex + 8, diffEndIndex); // +8 for "```diff\n"
             editFile(name, diffContent);
           }
         }

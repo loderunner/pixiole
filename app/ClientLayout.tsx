@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import Sidebar from './Sidebar';
 
 import SWRProvider from '@/src/SWRProvider';
-import { ProjectProvider } from '@/src/project';
 
 type Props = {
   children: React.ReactNode;
@@ -49,29 +48,27 @@ export default function ClientLayout({ children }: Props) {
 
   return (
     <SWRProvider>
-      <ProjectProvider>
-        <div className="relative flex h-screen w-full flex-row">
-          {/* Header with just hamburger button */}
-          <div className="fixed top-4 left-4 z-30">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="hamburger-button"
-              aria-label="Open menu"
-            >
-              <ListIcon className="text-xl" />
-            </button>
-          </div>
-
-          <Sidebar
-            isOpen={sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
-            isDark={isDark}
-            onToggleTheme={toggleTheme}
-          />
-
-          <main className="size-full">{children}</main>
+      <div className="relative flex h-screen w-full flex-row">
+        {/* Header with just hamburger button */}
+        <div className="fixed top-4 left-4 z-30">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="hamburger-button"
+            aria-label="Open menu"
+          >
+            <ListIcon className="text-xl" />
+          </button>
         </div>
-      </ProjectProvider>
+
+        <Sidebar
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          isDark={isDark}
+          onToggleTheme={toggleTheme}
+        />
+
+        <main className="size-full">{children}</main>
+      </div>
     </SWRProvider>
   );
 }

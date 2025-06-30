@@ -257,7 +257,7 @@ function AssistantMessage({ message }: { message: Message }) {
         <div className="glow-text mb-2 text-xs tracking-wide text-emerald-700 uppercase opacity-75 dark:text-emerald-400">
           Pixiole IA
         </div>
-        <div className="prose prose-code:before:content-none prose-code:after:content-none tutorial prose-li:my-1 prose-p:my-3 prose-headings:text-emerald-800 dark:prose-headings:text-emerald-300 prose-strong:text-emerald-900 dark:prose-strong:text-emerald-200 prose-code:text-emerald-800 dark:prose-code:text-emerald-400 prose-code:bg-slate-200/60 dark:prose-code:bg-gray-900/60 prose-code:py-1 prose-code:rounded max-w-none text-emerald-900 dark:text-emerald-100">
+        <div className="prose prose-code:before:content-none prose-code:after:content-none tutorial prose-li:my-1 prose-p:my-3 prose-headings:text-emerald-800 dark:prose-headings:text-emerald-300 prose-strong:text-emerald-900 dark:prose-strong:text-emerald-200 prose-code:text-emerald-800 dark:prose-code:text-emerald-400 prose-code:py-1 prose-code:rounded max-w-none text-emerald-900 dark:text-emerald-100">
           <div className="leading-relaxed">{content}</div>
         </div>
       </div>

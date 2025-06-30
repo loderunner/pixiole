@@ -451,12 +451,12 @@ html:not(.dark) .terminal-sidebar {
 
   /* Ensure all code lines have consistent background */
   .shiki .line {
-    background: transparent !important;
+    background: transparent;
   }
 
   /* Code block container consistency */
   .shiki code {
-    background: transparent !important;
+    background: transparent;
   }
 
   /* Scrollbar styling - Dark Mode */

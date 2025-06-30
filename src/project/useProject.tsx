@@ -3,11 +3,14 @@
 import {
   type PropsWithChildren,
   createContext,
+  useCallback,
   useContext,
-  useState,
+  useMemo,
 } from 'react';
 
 import { applyDiff } from './diff';
+
+import { useChatFiles, useCreateFile, useFileUpdater } from '@/src/api/hooks';
 
 /**
  * Represents a single file in a project
@@ -30,45 +33,71 @@ export type Project = {
 export type ProjectContextValue = {
   /** The current project state */
   project: Project;
+  /** Whether files are loading */
+  isLoading: boolean;
+  /** Any error from API calls */
+  error: Error | null;
   /** Creates a new file or overwrites an existing one */
-  createFile: (name: string, content: string) => void;
+  createFile: (name: string, content: string) => Promise<void>;
   /** Edits an existing file by applying a diff */
-  editFile: (name: string, diffContent: string) => void;
+  editFile: (name: string, diffContent: string) => Promise<void>;
 };
 
 const ProjectContext = createContext<ProjectContextValue | null>(null);
 
+type ProjectProviderProps = PropsWithChildren<{
+  chatId: string;
+}>;
+
 /**
- * Project provider component that manages project state
+ * Project provider component that manages project state with SWR
  */
-export function ProjectProvider({ children }: PropsWithChildren) {
-  const [project, setProject] = useState<Project>({ files: [] });
+export function ProjectProvider({ children, chatId }: ProjectProviderProps) {
+  const {
+    files,
+    isLoading: filesLoading,
+    error: filesError,
+  } = useChatFiles(chatId);
 
-  const createFile = (name: string, content: string) => {
-    setProject((prev) => ({
-      files: [...prev.files.filter((f) => f.name !== name), { name, content }],
-    }));
-  };
+  const { createFile: createFileAPI, error: createError } =
+    useCreateFile(chatId);
+  const createFile = useCallback(
+    async (name: string, content: string) => {
+      await createFileAPI({ name, content });
+    },
+    [createFileAPI],
+  );
 
-  const editFile = (name: string, diffContent: string) => {
-    setProject((prev) => {
-      const existingFile = prev.files.find((f) => f.name === name);
+  const { updateFile, error: updateError } = useFileUpdater(chatId);
+  const editFile = useCallback(
+    async (name: string, diffContent: string) => {
+      const existingFile = files.find((f) => f.name === name);
       if (existingFile !== undefined) {
         const updatedContent = applyDiff(existingFile.content, diffContent);
-        return {
-          files: prev.files.map((f) =>
-            f.name === name ? { ...f, content: updatedContent } : f,
-          ),
-        };
+        await updateFile({ fileName: name, content: updatedContent });
       }
-      return prev;
-    });
-  };
+    },
+    [files, updateFile],
+  );
+
+  const project: Project = useMemo(
+    () => ({
+      files: files.map((file) => ({
+        name: file.name,
+        content: file.content,
+      })),
+    }),
+    [files],
+  );
+
+  const error = filesError ?? createError ?? updateError ?? null;
 
   return (
     <ProjectContext.Provider
       value={{
         project,
+        isLoading: filesLoading,
+        error,
         createFile,
         editFile,
       }}

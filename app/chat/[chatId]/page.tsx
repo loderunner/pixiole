@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import Chat from './Chat';
 
 import { useChat } from '@/src/api/hooks';
+import { ProjectProvider } from '@/src/project';
 
 export default function ChatPage() {
   const params = useParams();
@@ -65,5 +66,9 @@ export default function ChatPage() {
     );
   }
 
-  return <Chat chatId={chatId} title={chat.title} />;
+  return (
+    <ProjectProvider chatId={chatId}>
+      <Chat chatId={chatId} title={chat.title} />
+    </ProjectProvider>
+  );
 }
