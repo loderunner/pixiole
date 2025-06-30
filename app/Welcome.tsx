@@ -213,9 +213,10 @@ const GAME_IDEAS = [
 
 type Props = {
   onSubmit: (msg: string) => void;
+  isLoading?: boolean;
 };
 
-export default function Welcome({ onSubmit }: Props) {
+export default function Welcome({ onSubmit, isLoading }: Props) {
   const [description, setDescription] = useState('');
   const [randomIdeas, setRandomIdeas] = useState<string[]>([]);
 
@@ -272,10 +273,11 @@ export default function Welcome({ onSubmit }: Props) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           onSubmit={() => onSubmit(description)}
+          isLoading={isLoading}
         />
 
         {/* Random game idea suggestions */}
-        {randomIdeas.length > 0 && (
+        {randomIdeas.length > 0 && !isLoading && (
           <div className="mt-4 space-y-3">
             <div className="flex items-center justify-between">
               <div className="text-sm text-emerald-600 dark:text-green-400">
@@ -298,6 +300,16 @@ export default function Welcome({ onSubmit }: Props) {
                   🎮 {idea}
                 </button>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Loading state */}
+        {isLoading && (
+          <div className="mt-4 text-center">
+            <div className="inline-flex items-center gap-2 rounded-lg border border-emerald-600/40 bg-emerald-600/15 px-4 py-2 text-emerald-700 dark:border-green-400/40 dark:bg-green-400/15 dark:text-green-300">
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-emerald-600/20 border-t-emerald-600 dark:border-green-400/20 dark:border-t-green-400"></div>
+              <span className="text-sm">🚀 Création de ton chat en cours...</span>
             </div>
           </div>
         )}
