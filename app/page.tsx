@@ -9,7 +9,7 @@ import { useCreateChat } from '@/src/api/hooks';
 
 export default function Page() {
   const router = useRouter();
-  const { createChat } = useCreateChat();
+  const { createChat, isCreating } = useCreateChat();
 
   const handleSubmit = async (message: string) => {
     const requestBody: CreateChatRequest = {
@@ -21,8 +21,7 @@ export default function Page() {
     router.push(`/chat/${chat.id}`);
   };
 
-  // TODO: Add a loading state
   // TODO: Add a error state
 
-  return <Welcome onSubmit={handleSubmit} />;
+  return <Welcome onSubmit={handleSubmit} isLoading={isCreating} />;
 }

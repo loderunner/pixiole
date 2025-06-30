@@ -120,6 +120,7 @@ export default function Chat({ className, chatId, title }: Props) {
     handleSubmit,
     reload,
     stop,
+    status,
   } = useStreamChat({
     tagHandlers,
     experimental_throttle: 50,
@@ -260,6 +261,7 @@ export default function Chat({ className, chatId, title }: Props) {
           onSubmit={handleChatSubmit}
           suggestions={suggestions}
           onSuggestionClick={handleSuggestionClick}
+          isLoading={status !== 'ready' && status !== 'error'}
         />
       </div>
     </div>

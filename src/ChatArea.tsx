@@ -18,6 +18,7 @@ type Props = PropsWithClassName<{
   placeholder: string;
   suggestions?: string[];
   onSuggestionClick?: (suggestion: string) => void;
+  isLoading: boolean;
 }>;
 
 export default function ChatArea({
@@ -28,6 +29,7 @@ export default function ChatArea({
   placeholder,
   suggestions = [],
   onSuggestionClick,
+  isLoading,
 }: Props) {
   const ref = useRef<HTMLTextAreaElement>(null);
 
@@ -43,6 +45,8 @@ export default function ChatArea({
 
   const onKeyDown = useCallback<KeyboardEventHandler<HTMLTextAreaElement>>(
     (e) => {
+      if (isLoading) return; // Prevent submit during loading
+
       if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey) {
         e.preventDefault();
         if (onSubmit !== undefined) {
@@ -50,13 +54,16 @@ export default function ChatArea({
         }
       }
     },
-    [onSubmit],
+    [onSubmit, isLoading],
   );
+
+  const isSubmitDisabled = value === undefined || value === '' || isLoading;
 
   return (
     <div
       className={twMerge(
         'terminal-window flex flex-col gap-3 p-4 transition-all duration-300',
+        isLoading && 'opacity-75',
         className,
       )}
     >
@@ -67,7 +74,8 @@ export default function ChatArea({
             <button
               key={index}
               onClick={() => onSuggestionClick?.(suggestion)}
-              className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1.5 text-xs text-emerald-700 transition-all hover:scale-105 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:hover:bg-emerald-800/40"
+              disabled={isLoading}
+              className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1.5 text-xs text-emerald-700 transition-all hover:scale-105 hover:bg-emerald-200 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 dark:bg-emerald-900/30 dark:text-emerald-300 dark:hover:bg-emerald-800/40"
             >
               <span className="text-xs">💡</span>
               <span>{suggestion}</span>
@@ -80,19 +88,24 @@ export default function ChatArea({
       <div className="flex flex-row items-start justify-start gap-4">
         <textarea
           ref={ref}
-          className="terminal-input min-h-[60px] grow resize-none outline-none"
+          className="terminal-input min-h-[60px] grow resize-none outline-none disabled:cursor-not-allowed disabled:opacity-50"
           value={value}
           rows={rows}
           placeholder={placeholder}
           onChange={onChange}
           onKeyDown={onKeyDown}
+          disabled={isLoading}
         ></textarea>
         <button
-          className="terminal-button flex-shrink-0 rounded-lg px-4 py-3"
-          disabled={value === undefined || value === ''}
+          className="terminal-button relative flex-shrink-0 rounded-lg px-4 py-3 disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={isSubmitDisabled}
           onClick={onSubmit}
         >
-          <PencilSimpleLineIcon className="text-xl" />
+          {isLoading ? (
+            <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+          ) : (
+            <PencilSimpleLineIcon className="text-xl" />
+          )}
         </button>
       </div>
     </div>
