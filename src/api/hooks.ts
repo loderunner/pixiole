@@ -109,6 +109,38 @@ export function useCreateChat() {
 }
 
 /**
+ * Hook to delete a chat using SWR mutation
+ */
+export function useDeleteChat() {
+  const { mutate } = useSWRConfig();
+  const { trigger, isMutating, error } = useSWRMutation(
+    '/api/chats/delete',
+    async (_url: string, { arg }: { arg: { chatId: string } }) => {
+      const response = await fetch(`/api/chats/${arg.chatId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete chat');
+      }
+
+      return response.json();
+    },
+    {
+      onSuccess: () => {
+        mutate('/api/chats');
+      },
+    },
+  );
+
+  return {
+    deleteChat: trigger,
+    isDeleting: isMutating,
+    error,
+  };
+}
+
+/**
  * Hook to fetch all chats using SWR
  */
 export function useChats() {

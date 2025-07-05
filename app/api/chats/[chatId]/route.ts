@@ -42,3 +42,30 @@ export async function GET(
 
   return NextResponse.json(response);
 }
+
+/**
+ * Delete a chat
+ */
+export async function DELETE(
+  _request: NextRequest,
+  context: RouteContext,
+): Promise<NextResponse<{ success: boolean } | ErrorResponse>> {
+  const { chatId } = await context.params;
+
+  // Check if chat exists first
+  const chat = await db.query.chats.findFirst({
+    where: eq(chats.id, chatId),
+  });
+
+  if (chat === null || chat === undefined) {
+    const errorResponse = ErrorResponseSchema.parse({
+      error: 'Chat not found',
+    });
+    return NextResponse.json(errorResponse, { status: 404 });
+  }
+
+  // Delete the chat (cascade will handle related messages and files)
+  await db.delete(chats).where(eq(chats.id, chatId));
+
+  return NextResponse.json({ success: true });
+}
