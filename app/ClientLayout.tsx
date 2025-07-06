@@ -3,9 +3,8 @@
 import { ListIcon } from '@phosphor-icons/react';
 import { useEffect, useState } from 'react';
 
-import Sidebar from './Sidebar';
-
 import SWRProvider from '@/src/SWRProvider';
+import Sidebar from '@/src/components/Sidebar';
 
 type Props = {
   children: React.ReactNode;

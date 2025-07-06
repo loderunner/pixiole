@@ -83,7 +83,7 @@ export function useCreateChat() {
   const { mutate } = useSWRConfig();
   const { trigger, isMutating, error } = useSWRMutation(
     '/api/chats',
-    async (url: string, { arg }: { arg: CreateChatRequest }) => {
+    async (url, { arg }: { arg: CreateChatRequest }) => {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -104,6 +104,38 @@ export function useCreateChat() {
   return {
     createChat: trigger,
     isCreating: isMutating,
+    error,
+  };
+}
+
+/**
+ * Hook to delete a chat using SWR mutation
+ */
+export function useDeleteChat(chatId: string) {
+  const { mutate } = useSWRConfig();
+  const { trigger, isMutating, error } = useSWRMutation(
+    `/api/chats/${chatId}`,
+    async (url) => {
+      const response = await fetch(url, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete chat');
+      }
+
+      return null;
+    },
+    {
+      onSuccess: () => {
+        mutate('/api/chats');
+      },
+    },
+  );
+
+  return {
+    deleteChat: trigger,
+    isDeleting: isMutating,
     error,
   };
 }
@@ -130,7 +162,7 @@ export function useCreateMessage(chatId: string) {
   const { mutate } = useSWRConfig();
   const { trigger, isMutating, error } = useSWRMutation(
     `/api/chats/${chatId}/messages`,
-    async (url: string, { arg }: { arg: CreateMessageRequest }) => {
+    async (url, { arg }: { arg: CreateMessageRequest }) => {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -179,7 +211,7 @@ export function useCreateFile(chatId: string) {
   const { mutate } = useSWRConfig();
   const { trigger, isMutating, error } = useSWRMutation(
     `/api/chats/${chatId}/files`,
-    async (url: string, { arg }: { arg: CreateFileRequest }) => {
+    async (url, { arg }: { arg: CreateFileRequest }) => {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -240,7 +272,7 @@ export function useUpdateChatFile(chatId: string, fileName: string) {
     fileName !== ''
       ? `/api/chats/${chatId}/files/${encodeURIComponent(fileName)}`
       : null,
-    async (url: string, { arg }: { arg: UpdateFileRequest }) => {
+    async (url, { arg }: { arg: UpdateFileRequest }) => {
       const response = await fetch(url, {
         method: 'PUT',
         headers: {

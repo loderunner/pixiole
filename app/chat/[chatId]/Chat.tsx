@@ -5,9 +5,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import ChatMessages from './ChatMessages';
 
 import type { CreateMessageRequest } from '@/app/api/chats/[chatId]/messages/types';
-import ChatArea from '@/src/ChatArea';
 import { PropsWithClassName } from '@/src/PropsWithClassName';
 import { useChatMessages, useCreateMessage } from '@/src/api/hooks';
+import ChatArea from '@/src/components/ChatArea';
 import { useProject } from '@/src/project';
 import { TagHandlers, useStreamChat } from '@/src/useStreamChat';
 

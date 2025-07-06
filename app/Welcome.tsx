@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import ChatArea from '@/src/ChatArea';
+import ChatArea from '@/src/components/ChatArea';
 
 // Static list of 200 French game ideas
 const GAME_IDEAS = [

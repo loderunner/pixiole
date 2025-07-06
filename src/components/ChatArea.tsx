@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-import type { PropsWithClassName } from './PropsWithClassName';
+import type { PropsWithClassName } from '@/src/PropsWithClassName';
 
 type Props = PropsWithClassName<{
   value?: string;
