@@ -19,6 +19,7 @@ type Props = {
   onToggleTheme: () => void;
 };
 
+
 export default function Sidebar({
   isOpen,
   onClose,

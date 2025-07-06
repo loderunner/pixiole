@@ -111,12 +111,12 @@ export function useCreateChat() {
 /**
  * Hook to delete a chat using SWR mutation
  */
-export function useDeleteChat() {
+export function useDeleteChat(chatId: string) {
   const { mutate } = useSWRConfig();
   const { trigger, isMutating, error } = useSWRMutation(
-    '/api/chats/delete',
-    async (_url: string, { arg }: { arg: { chatId: string } }) => {
-      const response = await fetch(`/api/chats/${arg.chatId}`, {
+    `/api/chats/${chatId}`,
+    async (_url: string) => {
+      const response = await fetch(`/api/chats/${chatId}`, {
         method: 'DELETE',
       });
 
@@ -124,7 +124,6 @@ export function useDeleteChat() {
         throw new Error('Failed to delete chat');
       }
 
-      // 204 No Content - no body to parse
       return null;
     },
     {
