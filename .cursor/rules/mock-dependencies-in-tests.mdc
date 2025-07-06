@@ -1,0 +1,6 @@
+---
+globs: *.test.ts
+alwaysApply: false
+---
+
+When writing unit tests, make sure to keep them as contained as possible. Mock as many dependencies as you can.

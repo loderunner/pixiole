@@ -25,7 +25,11 @@ const config = [
       parser: tsParser,
       parserOptions: {
         projectService: {
-          allowDefaultProject: ['eslint.config.mjs', 'postcss.config.mjs'],
+          allowDefaultProject: [
+            'eslint.config.mjs',
+            'postcss.config.mjs',
+            'vitest.config.mts',
+          ],
         },
       },
     },
