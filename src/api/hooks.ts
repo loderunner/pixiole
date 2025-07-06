@@ -124,7 +124,8 @@ export function useDeleteChat() {
         throw new Error('Failed to delete chat');
       }
 
-      return response.json();
+      // 204 No Content - no body to parse
+      return null;
     },
     {
       onSuccess: () => {
