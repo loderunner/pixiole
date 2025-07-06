@@ -27,6 +27,11 @@ export default function Welcome({ onSubmit, isLoading }: Props) {
     setDescription(idea.description);
   };
 
+  const getFirstSentence = (description: string): string => {
+    const firstSentenceEnd = description.indexOf('.');
+    return firstSentenceEnd !== -1 ? description.substring(0, firstSentenceEnd + 1) : description;
+  };
+
   const generateNewIdeas = () => {
     const shuffled = [...GAME_IDEAS].sort(() => 0.5 - Math.random());
     setRandomIdeas(shuffled.slice(0, 3));
@@ -91,7 +96,7 @@ export default function Welcome({ onSubmit, isLoading }: Props) {
                   onClick={() => handleIdeaClick(idea)}
                   className="rounded-lg border border-emerald-600/30 bg-emerald-600/10 px-4 py-2 text-sm text-emerald-700 transition-all hover:border-emerald-600/50 hover:bg-emerald-600/20 dark:border-green-400/30 dark:bg-green-400/10 dark:text-green-300 dark:hover:border-green-400/50 dark:hover:bg-green-400/20"
                 >
-                  🎮 {idea.label}
+                  🎮 {getFirstSentence(idea.description)}
                 </button>
               ))}
             </div>
