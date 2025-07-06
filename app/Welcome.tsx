@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import ChatArea from '@/src/components/ChatArea';
-import { GAME_IDEAS } from '@/src/game-ideas';
+import { GAME_IDEAS, type GameIdea } from '@/src/game-ideas';
 
 type Props = {
   onSubmit: (msg: string) => void;
@@ -12,7 +12,7 @@ type Props = {
 
 export default function Welcome({ onSubmit, isLoading }: Props) {
   const [description, setDescription] = useState('');
-  const [randomIdeas, setRandomIdeas] = useState<string[]>([]);
+  const [randomIdeas, setRandomIdeas] = useState<GameIdea[]>([]);
 
   // Generate 3 random game ideas on component mount
   useEffect(() => {
@@ -23,8 +23,8 @@ export default function Welcome({ onSubmit, isLoading }: Props) {
     setRandomIdeas(getRandomIdeas());
   }, []);
 
-  const handleIdeaClick = (idea: string) => {
-    setDescription(idea);
+  const handleIdeaClick = (idea: GameIdea) => {
+    setDescription(idea.description);
   };
 
   const generateNewIdeas = () => {
@@ -91,7 +91,7 @@ export default function Welcome({ onSubmit, isLoading }: Props) {
                   onClick={() => handleIdeaClick(idea)}
                   className="rounded-lg border border-emerald-600/30 bg-emerald-600/10 px-4 py-2 text-sm text-emerald-700 transition-all hover:border-emerald-600/50 hover:bg-emerald-600/20 dark:border-green-400/30 dark:bg-green-400/10 dark:text-green-300 dark:hover:border-green-400/50 dark:hover:bg-green-400/20"
                 >
-                  🎮 {idea}
+                  🎮 {idea.label}
                 </button>
               ))}
             </div>
