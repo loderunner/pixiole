@@ -135,12 +135,20 @@ export function useStreamChat(options: UseStreamChatOptions = {}) {
 
   const onFinish = useCallback<NonNullable<UseChatOptions['onFinish']>>(
     (message, finishOptions) => {
+      let processedContent = message.content;
       if (message.role === 'assistant' && tagHandlers !== undefined) {
-        processStreamContent(message.content, tagHandlers, true);
+        processedContent = processStreamContent(
+          message.content,
+          tagHandlers,
+          true,
+        );
       }
 
       // Call original onFinish if provided
-      onFinishOption?.(message, finishOptions);
+      onFinishOption?.(
+        { ...message, content: processedContent },
+        finishOptions,
+      );
     },
     [onFinishOption, tagHandlers],
   );

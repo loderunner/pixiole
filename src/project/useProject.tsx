@@ -8,8 +8,6 @@ import {
   useMemo,
 } from 'react';
 
-import { applyDiff } from './diff';
-
 import { useChatFiles, useCreateFile, useFileUpdater } from '@/src/api/hooks';
 
 /**
@@ -39,8 +37,8 @@ export type ProjectContextValue = {
   error: Error | null;
   /** Creates a new file or overwrites an existing one */
   createFile: (name: string, content: string) => Promise<void>;
-  /** Edits an existing file by applying a diff */
-  editFile: (name: string, diffContent: string) => Promise<void>;
+  /** Updates an existing file with new content */
+  editFile: (name: string, content: string) => Promise<void>;
 };
 
 const ProjectContext = createContext<ProjectContextValue | null>(null);
@@ -70,14 +68,10 @@ export function ProjectProvider({ children, chatId }: ProjectProviderProps) {
 
   const { updateFile, error: updateError } = useFileUpdater(chatId);
   const editFile = useCallback(
-    async (name: string, diffContent: string) => {
-      const existingFile = files.find((f) => f.name === name);
-      if (existingFile !== undefined) {
-        const updatedContent = applyDiff(existingFile.content, diffContent);
-        await updateFile({ fileName: name, content: updatedContent });
-      }
+    async (name: string, content: string) => {
+      await updateFile({ fileName: name, content });
     },
-    [files, updateFile],
+    [updateFile],
   );
 
   const project: Project = useMemo(

@@ -235,7 +235,7 @@ function AssistantMessage({ message }: { message: Message }) {
             highlighter,
             {
               theme: isDark ? 'pixiole-terminal' : 'pixiole-light',
-              transformers: [transformerNotationDiff()],
+              transformers: [transformerNotationDiff({ matchAlgorithm: 'v1' })],
             },
           ],
         ]}

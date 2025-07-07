@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPatch } from 'diff';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import ChatMessages from './ChatMessages';
 
@@ -20,6 +21,7 @@ function createTagHandlers(
   createFile: (name: string, content: string) => Promise<void>,
   editFile: (name: string, content: string) => Promise<void>,
   setSuggestions: (suggestions: string[]) => void,
+  getFileContent: (name: string) => string,
 ): TagHandlers {
   return {
     Thinking: {
@@ -72,21 +74,48 @@ function createTagHandlers(
     },
     EditFile: {
       onOpen: () => '',
-      onClose: () => '',
-      onComplete: (content: string, attributes: Record<string, string>) => {
+      onClose: (content: string, attributes: Record<string, string>) => {
         const name = attributes.name;
 
         if (name !== undefined) {
-          const diffStartIndex = content.indexOf('```diff');
-          const diffEndIndex = content.lastIndexOf('```');
+          const codeStartIndex = content.indexOf('```lua');
+          const codeEndIndex = content.lastIndexOf('```');
 
           if (
-            diffStartIndex !== -1 &&
-            diffEndIndex !== -1 &&
-            diffEndIndex > diffStartIndex
+            codeStartIndex !== -1 &&
+            codeEndIndex !== -1 &&
+            codeEndIndex > codeStartIndex
           ) {
-            const diffContent = content.slice(diffStartIndex + 8, diffEndIndex); // +8 for "```diff\n"
-            editFile(name, diffContent);
+            const newContent = content.slice(codeStartIndex + 7, codeEndIndex); // +7 for "```lua\n"
+            const oldContent = getFileContent(name);
+
+            // Generate diff for display
+            const diff = createPatch(name, oldContent, newContent)
+              .split('\n')
+              .slice(5)
+              .join('\n');
+
+            // Return the diff content for display
+            return [`\`\`\`diff\n${diff}\n\`\`\``, ''];
+          }
+        }
+
+        return '';
+      },
+      onComplete: (content: string, attributes: Record<string, string>) => {
+        const name = attributes.name;
+        if (name !== undefined) {
+          const codeStartIndex = content.indexOf('```lua');
+          const codeEndIndex = content.lastIndexOf('```');
+
+          if (
+            codeStartIndex !== -1 &&
+            codeEndIndex !== -1 &&
+            codeEndIndex > codeStartIndex
+          ) {
+            const newContent = content.slice(codeStartIndex + 7, codeEndIndex); // +7 for "```lua\n"
+            // Apply the file change
+            editFile(name, newContent);
           }
         }
       },
@@ -95,7 +124,7 @@ function createTagHandlers(
 }
 
 export default function Chat({ className, chatId, title }: Props) {
-  const { createFile, editFile } = useProject();
+  const { createFile, editFile, project } = useProject();
   const { createMessage } = useCreateMessage(chatId);
   const {
     messages: apiMessages,
@@ -106,9 +135,19 @@ export default function Chat({ className, chatId, title }: Props) {
   // State for storing suggestions
   const [suggestions, setSuggestions] = useState<string[]>([]);
 
+  // Helper function to get file content
+  const getFileContent = useCallback(
+    (name: string) => {
+      const file = project.files.find((f) => f.name === name);
+      return file?.content ?? '';
+    },
+    [project.files],
+  );
+
   const tagHandlers = useMemo(
-    () => createTagHandlers(createFile, editFile, setSuggestions),
-    [createFile, editFile],
+    () =>
+      createTagHandlers(createFile, editFile, setSuggestions, getFileContent),
+    [createFile, editFile, getFileContent],
   );
 
   const {
