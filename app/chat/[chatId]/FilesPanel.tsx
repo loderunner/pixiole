@@ -66,7 +66,7 @@ export default function FilesPanel({ chatId, onClose }: Props) {
   }, [file, viewMode]);
 
   return (
-    <div className="terminal-sidebar files-panel h-full w-full lg:w-96">
+    <div className="terminal-sidebar files-panel h-full w-full lg:w-120">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-emerald-600/50 bg-slate-100/50 p-4 dark:border-emerald-500/50 dark:bg-gray-900/50">
         <div className="flex items-center space-x-2">
