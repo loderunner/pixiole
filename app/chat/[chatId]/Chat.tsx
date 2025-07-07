@@ -7,7 +7,7 @@ import ChatMessages from './ChatMessages';
 
 import type { CreateMessageRequest } from '@/app/api/chats/[chatId]/messages/types';
 import { PropsWithClassName } from '@/src/PropsWithClassName';
-import { useChatMessages, useCreateMessage } from '@/src/api/hooks';
+import { useChatMessages, useCreateMessage, useCreateImage, useChatImages } from '@/src/api/hooks';
 import ChatArea from '@/src/components/ChatArea';
 import { useProject } from '@/src/project';
 import { TagHandlers, useStreamChat } from '@/src/useStreamChat';
@@ -22,6 +22,8 @@ function createTagHandlers(
   editFile: (name: string, content: string) => Promise<void>,
   setSuggestions: (suggestions: string[]) => void,
   getFileContent: (name: string) => string,
+  createImage: (imageData: { name: string; prompt: string; size: string }) => Promise<{ id: string }>,
+  images: { id: string; name: string; status: string; imageUrl: string | null }[],
 ): TagHandlers {
   // Cache to store original file content before edits
   const originalContentCache = new Map<string, string>();
@@ -137,12 +139,47 @@ function createTagHandlers(
         }
       },
     },
+    ImagePrompt: {
+      onOpen: () => {
+        return '';
+      },
+      onClose: (content: string, attributes: Record<string, string>) => {
+        const name = attributes.name || 'generated-image';
+        const size = attributes.size || '16x16';
+        
+        // Create the image resource and trigger generation
+        createImage({ name, prompt: content.trim(), size })
+          .then(({ id }) => {
+            console.log(`Image generation started for ${name} with ID ${id}`);
+          })
+          .catch((error) => {
+            console.error('Failed to create image:', error);
+          });
+
+        // Return placeholder content for now
+        return `![Génération d'image en cours...](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJvcGFjaXR5IiB2YWx1ZXM9IjA7MTswIiBkdXI9IjJzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIvPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzY2NzM4NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkdlbmVyYXRpb24uLi48YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJvcGFjaXR5IiB2YWx1ZXM9IjA7MTswIiBkdXI9IjJzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIvPjwvdGV4dD48L3N2Zz4=)`;
+      },
+      onComplete: async (content: string, attributes: Record<string, string>) => {
+        const name = attributes.name || 'generated-image';
+        const size = attributes.size || '16x16';
+        
+        // Find the image by name in the images array
+        const imageResource = images.find(img => img.name === name);
+        
+        if (imageResource && imageResource.status === 'completed' && imageResource.imageUrl) {
+          // Image is ready, we could update the UI here if needed
+          console.log(`Image ${name} completed: ${imageResource.imageUrl}`);
+        }
+      },
+    },
   };
 }
 
 export default function Chat({ className, chatId, title }: Props) {
   const { createFile, editFile, project } = useProject();
   const { createMessage } = useCreateMessage(chatId);
+  const { createImage } = useCreateImage(chatId);
+  const { images } = useChatImages(chatId);
   const {
     messages: apiMessages,
     isLoading: messagesLoading,
@@ -163,8 +200,8 @@ export default function Chat({ className, chatId, title }: Props) {
 
   const tagHandlers = useMemo(
     () =>
-      createTagHandlers(createFile, editFile, setSuggestions, getFileContent),
-    [createFile, editFile, getFileContent],
+      createTagHandlers(createFile, editFile, setSuggestions, getFileContent, createImage, images),
+    [createFile, editFile, getFileContent, createImage, images],
   );
 
   const {

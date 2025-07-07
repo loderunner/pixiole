@@ -19,6 +19,16 @@ import {
   ListFilesResponseSchema,
 } from '@/app/api/chats/[chatId]/files/types';
 import type {
+  CreateImageRequest,
+  Image,
+  ListImagesResponse,
+} from '@/app/api/chats/[chatId]/images/types';
+import {
+  CreateImageResponseSchema,
+  ImageSchema,
+  ListImagesResponseSchema,
+} from '@/app/api/chats/[chatId]/images/types';
+import type {
   CreateMessageRequest,
   ListMessagesResponse,
 } from '@/app/api/chats/[chatId]/messages/types';
@@ -341,5 +351,71 @@ export function useFileUpdater(chatId: string) {
     updateFile: trigger,
     isUpdating: isMutating,
     error,
+  };
+}
+
+/**
+ * Hook to fetch images for a chat using SWR
+ */
+export function useChatImages(chatId: string) {
+  const { data, error, isLoading } = useSWR(
+    `/api/chats/${chatId}/images`,
+    (url) => fetcher<ListImagesResponse>(url, ListImagesResponseSchema),
+  );
+
+  return {
+    images: data?.images ?? [],
+    isLoading,
+    error,
+  };
+}
+
+/**
+ * Hook to create a new image using SWR mutation
+ */
+export function useCreateImage(chatId: string) {
+  const { mutate } = useSWRConfig();
+  const { trigger, isMutating, error } = useSWRMutation(
+    `/api/chats/${chatId}/images`,
+    async (url, { arg }: { arg: CreateImageRequest }) => {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(arg),
+      });
+
+      return validateAPIResponse(response, CreateImageResponseSchema);
+    },
+    {
+      onSuccess: () => {
+        mutate(`/api/chats/${chatId}/images`);
+        mutate(`/api/chats/${chatId}`);
+      },
+    },
+  );
+
+  return {
+    createImage: trigger,
+    isCreating: isMutating,
+    error,
+  };
+}
+
+/**
+ * Hook to get a specific image using SWR
+ */
+export function useChatImage(chatId: string, imageId: string) {
+  const { data, error, isLoading, mutate } = useSWR(
+    imageId !== '' ? `/api/chats/${chatId}/images/${imageId}` : null,
+    (url) => fetcher<Image>(url, ImageSchema),
+  );
+
+  return {
+    image: data,
+    isLoading,
+    error,
+    mutate,
   };
 }
