@@ -250,6 +250,282 @@ export const GAME_IDEAS: GameIdea[] = [
   {
     short: "Un jeu de nettoyage de fenêtres avec des taches à enlever",
     long: "Un jeu de nettoyage de fenêtres avec des taches à enlever. Le joueur doit nettoyer toutes les taches sans laisser de traces. Différents types de taches nécessitent des techniques différentes. Le temps et les produits de nettoyage sont limités. La propreté finale détermine le score."
+  },
+  {
+    short: "Un jeu de réparation de pixels morts sur un écran",
+    long: "Un jeu de réparation de pixels morts sur un écran. Le joueur doit rallumer les pixels défectueux en cliquant dessus dans le bon ordre. Certains pixels sont connectés et s'allument ensemble. Des circuits complexes nécessitent de comprendre les connections. L'objectif est de restaurer une image parfaite sans dépasser le nombre de clics autorisés."
+  },
+  {
+    short: "Un jeu de cultivation de cristaux avec des formes géométriques",
+    long: "Un jeu de cultivation de cristaux avec des formes géométriques. Le joueur place des germes de cristal qui grandissent selon des règles mathématiques. Les cristaux adjacents s'influencent mutuellement et créent des patterns. L'objectif est de créer des formes spécifiques en planifiant la croissance. Les cristaux peuvent fusionner ou se briser selon leur taille."
+  },
+  {
+    short: "Un jeu de navigation d'un robot dans un labyrinthe",
+    long: "Un jeu de navigation d'un robot dans un labyrinthe. Le robot ne voit que les cases adjacentes et doit cartographier le labyrinthe. Le joueur programme des séquences de mouvements à l'avance. Le robot execute les commandes automatiquement jusqu'à rencontrer un obstacle. L'objectif est de trouver la sortie avec le minimum d'instructions."
+  },
+  {
+    short: "Un jeu de contagion avec des cellules qui se propagent",
+    long: "Un jeu de contagion avec des cellules qui se propagent. Le joueur contrôle un virus qui infecte les cellules voisines. Différents types de cellules résistent différemment. Le système immunitaire contre-attaque et élimine les cellules infectées. L'objectif est d'infecter tout l'organisme avant d'être détruit."
+  },
+  {
+    short: "Un jeu de fusion de bulles avec des couleurs primaires",
+    long: "Un jeu de fusion de bulles avec des couleurs primaires. Les bulles de couleurs primaires fusionnent pour créer de nouvelles couleurs. Les bulles secondaires peuvent être décomposées en leurs composants. L'objectif est de créer une couleur cible en manipulant les fusions. La physique des bulles ajoute un élément de timing."
+  },
+  {
+    short: "Un jeu de time-lapse de croissance d'une plante",
+    long: "Un jeu de time-lapse de croissance d'une plante. Le joueur contrôle les conditions environnementales pour faire pousser une plante. L'eau, la lumière et les nutriments affectent la croissance. La plante réagit en temps réel aux changements. L'objectif est de faire fleurir la plante en respectant ses besoins naturels."
+  },
+  {
+    short: "Un jeu de synchronisation de pendules avec des rythmes",
+    long: "Un jeu de synchronisation de pendules avec des rythmes. Plusieurs pendules oscillent à des vitesses différentes et le joueur doit les synchroniser. Toucher un pendule modifie son rythme temporairement. Des patterns complexes émergent de la synchronisation. L'objectif est de créer une harmonie parfaite entre tous les pendules."
+  },
+  {
+    short: "Un jeu de simulation d'écosystème avec des chaînes alimentaires",
+    long: "Un jeu de simulation d'écosystème avec des chaînes alimentaires. Le joueur introduit différentes espèces qui interagissent selon des règles naturelles. Les prédateurs mangent les proies et les populations fluctuent. L'équilibre est fragile et peut s'effondrer rapidement. L'objectif est de maintenir un écosystème stable le plus longtemps possible."
+  },
+  {
+    short: "Un jeu de décodage de signaux extraterrestres",
+    long: "Un jeu de décodage de signaux extraterrestres. Le joueur reçoit des patterns de signaux qu'il doit analyser pour trouver des messages. Les signaux suivent des règles mathématiques cachées. Différents types de signaux représentent des concepts différents. L'objectif est de décoder suffisamment de messages pour comprendre le langage alien."
+  },
+  {
+    short: "Un jeu de gestion de fourmilière avec des phéromones",
+    long: "Un jeu de gestion de fourmilière avec des phéromones. Le joueur place des traces de phéromones pour guider les fourmis. Les fourmis suivent les traces les plus fortes automatiquement. Les phéromones s'évaporent avec le temps et doivent être renouvelées. L'objectif est d'optimiser les chemins pour collecter le maximum de nourriture."
+  },
+  {
+    short: "Un jeu de construction de machines avec des engrenages",
+    long: "Un jeu de construction de machines avec des engrenages. Le joueur connecte des engrenages pour transmettre le mouvement d'un moteur. Les ratios d'engrenages déterminent la vitesse et la force. Des pièces défectueuses peuvent bloquer le système. L'objectif est de créer une machine qui accomplit une tâche spécifique."
+  },
+  {
+    short: "Un jeu de vie artificielle avec des créatures évolutives",
+    long: "Un jeu de vie artificielle avec des créatures évolutives. Les créatures ont des comportements simples et se reproduisent selon leur succès. Les mutations introduisent de nouveaux comportements aléatoirement. L'environnement change et favorise certains traits. L'objectif est d'observer l'évolution et de prédire les adaptations."
+  },
+  {
+    short: "Un jeu de résonance harmonique avec des fréquences",
+    long: "Un jeu de résonance harmonique avec des fréquences. Le joueur ajuste des oscillateurs pour créer des harmonies parfaites. Les fréquences s'additionnent et créent des interférences. Certaines combinaisons débloquent des effets spéciaux. L'objectif est de découvrir les accords parfaits qui font résonner le système."
+  },
+  {
+    short: "Un jeu de propagation de rumeurs dans un réseau social",
+    long: "Un jeu de propagation de rumeurs dans un réseau social. Le joueur lance une rumeur et observe sa diffusion. Certaines personnes amplifient le message, d'autres le déforment. Les connections sociales déterminent la vitesse de propagation. L'objectif est de faire circuler un message précis à travers tout le réseau."
+  },
+  {
+    short: "Un jeu de création de fractales avec des règles simples",
+    long: "Un jeu de création de fractales avec des règles simples. Le joueur définit une règle de base qui se répète à différentes échelles. Les formes émergent naturellement de l'application répétée de la règle. Des paramètres simples créent des patterns complexes. L'objectif est de reproduire des fractales célèbres en découvrant leurs règles."
+  },
+  {
+    short: "Un jeu de téléportation avec des portails connectés",
+    long: "Un jeu de téléportation avec des portails connectés. Le joueur place des portails qui sont connectés entre eux. Les objets qui entrent par un portail sortent par son jumeau. La conservation de l'élan crée des puzzles physiques. L'objectif est d'utiliser les portails pour atteindre des endroits inaccessibles."
+  },
+  {
+    short: "Un jeu de manipulation du temps avec des boucles temporelles",
+    long: "Un jeu de manipulation du temps avec des boucles temporelles. Le joueur peut créer des points de sauvegarde temporels et y retourner. Les actions passées affectent le présent de manière prévisible. Des paradoxes temporels créent des situations impossibles. L'objectif est de résoudre des puzzles en manipulant la timeline."
+  },
+  {
+    short: "Un jeu de chimie avec des réactions en chaîne",
+    long: "Un jeu de chimie avec des réactions en chaîne. Le joueur mélange des éléments chimiques pour créer des réactions. Chaque réaction produit de nouveaux composés et de l'énergie. Les réactions peuvent déclencher d'autres réactions en cascade. L'objectif est de créer des réactions contrôlées pour synthétiser des molécules cibles."
+  },
+  {
+    short: "Un jeu de gravité inversée avec des objets qui tombent vers le haut",
+    long: "Un jeu de gravité inversée avec des objets qui tombent vers le haut. Le joueur contrôle la direction de la gravité pour guider des objets. Les objets ont des masses différentes et réagissent différemment. Des obstacles fixes compliquent la trajectoire. L'objectif est de faire arriver tous les objets à destination en manipulant la gravité."
+  },
+  {
+    short: "Un jeu de dressage de créatures avec des comportements émergents",
+    long: "Un jeu de dressage de créatures avec des comportements émergents. Les créatures apprennent de leurs interactions avec l'environnement. Le renforcement positif modifie leurs comportements graduellement. Différentes créatures ont des personnalités et des capacités d'apprentissage variables. L'objectif est d'entraîner une créature pour qu'elle accomplisse des tâches complexes."
+  },
+  {
+    short: "Un jeu de construction de ponts avec des matériaux qui s'usent",
+    long: "Un jeu de construction de ponts avec des matériaux qui s'usent. Le joueur construit des ponts pour faire passer des véhicules. Les matériaux se fatiguent et se cassent après utilisation. Différents matériaux ont des propriétés de résistance variables. L'objectif est de construire des ponts durables qui résistent à l'usure du temps."
+  },
+  {
+    short: "Un jeu de simulation de trafic avec des algorithmes d'optimisation",
+    long: "Un jeu de simulation de trafic avec des algorithmes d'optimisation. Le joueur programme des feux de circulation intelligents. Les algorithmes s'adaptent en temps réel au volume de trafic. Des événements imprévus perturbent le système. L'objectif est de minimiser les embouteillages en optimisant les algorithmes de contrôle."
+  },
+  {
+    short: "Un jeu de jardinage spatial avec des plantes qui flottent",
+    long: "Un jeu de jardinage spatial avec des plantes qui flottent. Les plantes poussent en apesanteur et prennent des formes impossibles. Les nutriments flottent librement et doivent être guidés vers les racines. La lumière solaire varie selon l'orbite de la station. L'objectif est de créer un jardin prospère dans l'espace."
+  },
+  {
+    short: "Un jeu de programmation d'automates avec des règles cellulaires",
+    long: "Un jeu de programmation d'automates avec des règles cellulaires. Le joueur définit des règles simples qui s'appliquent à chaque cellule. Les patterns complexes émergent de l'application répétée des règles. Des configurations initiales différentes produisent des évolutions variées. L'objectif est de créer des automates qui génèrent des patterns spécifiques."
+  },
+  {
+    short: "Un jeu de manipulation de l'ADN avec des séquences génétiques",
+    long: "Un jeu de manipulation de l'ADN avec des séquences génétiques. Le joueur coupe et colle des segments d'ADN pour créer de nouvelles séquences. Chaque gène produit des protéines avec des fonctions spécifiques. Les mutations peuvent améliorer ou détruire les fonctions. L'objectif est de créer des organismes avec des capacités désirées."
+  },
+  {
+    short: "Un jeu de reconstruction d'images avec des pixels manquants",
+    long: "Un jeu de reconstruction d'images avec des pixels manquants. Le joueur doit deviner la couleur des pixels effacés. Les pixels voisins donnent des indices sur la couleur correcte. Des algorithmes de reconstruction automatique aident le joueur. L'objectif est de restaurer parfaitement l'image originale avec un minimum d'erreurs."
+  },
+  {
+    short: "Un jeu de simulation de vagues avec des interférences",
+    long: "Un jeu de simulation de vagues avec des interférences. Le joueur crée des sources de vagues qui se propagent et interagissent. Les vagues s'additionnent et créent des patterns d'interférence. Des obstacles reflètent et absorbent les vagues. L'objectif est de créer des patterns d'onde spécifiques en plaçant les sources correctement."
+  },
+  {
+    short: "Un jeu de domotique avec des capteurs et des actionneurs",
+    long: "Un jeu de domotique avec des capteurs et des actionneurs. Le joueur connecte des capteurs à des actionneurs pour automatiser une maison. Les capteurs détectent les changements environnementaux. Les actionneurs réagissent selon la programmation. L'objectif est de créer un système domotique efficace qui répond aux besoins des habitants."
+  },
+  {
+    short: "Un jeu de culture de bactéries avec des antibiotiques",
+    long: "Un jeu de culture de bactéries avec des antibiotiques. Les bactéries se reproduisent exponentiellement dans des conditions favorables. Les antibiotiques tuent les bactéries mais créent une résistance. Les bactéries résistantes deviennent dominantes. L'objectif est de gérer une infection en utilisant les antibiotiques de manière stratégique."
+  },
+  {
+    short: "Un jeu de génération de musique avec des algorithmes",
+    long: "Un jeu de génération de musique avec des algorithmes. Le joueur programme des règles pour générer des mélodies automatiquement. Les algorithmes combinent des notes selon des patterns harmoniques. Le hasard contrôlé introduit de la variété. L'objectif est de créer des algorithmes qui génèrent de la musique agréable et cohérente."
+  },
+  {
+    short: "Un jeu de simulation de neurones avec des synapses",
+    long: "Un jeu de simulation de neurones avec des synapses. Le joueur connecte des neurones pour créer des réseaux de traitement. Les signaux se propagent et se transforment à travers les connections. L'apprentissage modifie la force des synapses. L'objectif est de créer un réseau neuronal qui apprend à accomplir des tâches spécifiques."
+  },
+  {
+    short: "Un jeu de pliage de protéines avec des acides aminés",
+    long: "Un jeu de pliage de protéines avec des acides aminés. Le joueur doit plier une chaîne d'acides aminés pour former une protéine stable. Les forces d'attraction et de répulsion déterminent la forme finale. Un mauvais pliage peut rendre la protéine inactive. L'objectif est de trouver la conformation optimale qui minimise l'énergie totale."
+  },
+  {
+    short: "Un jeu de simulation de particules avec des forces physiques",
+    long: "Un jeu de simulation de particules avec des forces physiques. Le joueur contrôle des champs de force qui agissent sur les particules. Les particules s'attirent, se repoussent et entrent en collision. Des patterns complexes émergent de ces interactions simples. L'objectif est de créer des configurations stables ou des mouvements périodiques."
+  },
+  {
+    short: "Un jeu de décryptage de codes avec des indices cachés",
+    long: "Un jeu de décryptage de codes avec des indices cachés. Le joueur reçoit des messages codés et doit en découvrir la clé. Les indices sont dissimulés dans le texte ou l'environnement. Différentes techniques de cryptage nécessitent des approches différentes. L'objectif est de décoder tous les messages pour révéler un secret plus grand."
+  },
+  {
+    short: "Un jeu de simulation de marché avec des prix fluctuants",
+    long: "Un jeu de simulation de marché avec des prix fluctuants. Le joueur achète et vend des marchandises selon les variations de prix. L'offre et la demande déterminent les prix en temps réel. Des événements externes perturbent le marché. L'objectif est de maximiser les profits en anticipant les mouvements du marché."
+  },
+  {
+    short: "Un jeu de construction de labyrinthes avec des algorithmes",
+    long: "Un jeu de construction de labyrinthes avec des algorithmes. Le joueur programme des algorithmes pour générer des labyrinthes automatiquement. Différents algorithmes créent des structures différentes. Le labyrinthe doit avoir une solution unique. L'objectif est de créer des labyrinthes équilibrés entre difficulté et résolvabilité."
+  },
+  {
+    short: "Un jeu de simulation de fourmis avec des algorithmes collectifs",
+    long: "Un jeu de simulation de fourmis avec des algorithmes collectifs. Les fourmis suivent des règles simples mais créent des comportements complexes. La colonie s'organise automatiquement pour accomplir des tâches. Le joueur peut influencer indirectement le comportement collectif. L'objectif est de comprendre comment l'intelligence collective émerge des actions individuelles."
+  },
+  {
+    short: "Un jeu de création de patterns avec des automates cellulaires",
+    long: "Un jeu de création de patterns avec des automates cellulaires. Le joueur définit des règles de transition entre états des cellules. Les patterns évoluent génération après génération selon ces règles. Certaines règles créent des patterns stables, d'autres chaotiques. L'objectif est de découvrir les règles qui génèrent des patterns artistiques ou fonctionnels."
+  },
+  {
+    short: "Un jeu de simulation de rivière avec des sédiments",
+    long: "Un jeu de simulation de rivière avec des sédiments. Le joueur contrôle le débit et la direction de l'eau. Les sédiments s'érodent et se déposent selon le courant. Le lit de la rivière change de forme au fil du temps. L'objectif est de diriger l'eau vers sa destination tout en gérant l'érosion."
+  },
+  {
+    short: "Un jeu de programmation de comportements avec des agents intelligents",
+    long: "Un jeu de programmation de comportements avec des agents intelligents. Le joueur programme des agents qui prennent des décisions autonomes. Les agents perçoivent leur environnement et réagissent selon leur programmation. Des comportements complexes émergent de règles simples. L'objectif est de créer des agents qui accomplissent des tâches collaboratives."
+  },
+  {
+    short: "Un jeu de reconstruction de circuits avec des composants électroniques",
+    long: "Un jeu de reconstruction de circuits avec des composants électroniques. Le joueur doit reconstituer un circuit fonctionnel à partir de composants dispersés. Chaque composant a des propriétés électriques spécifiques. Les circuits doivent respecter les lois de l'électricité. L'objectif est de créer des circuits qui accomplissent des fonctions logiques ou de traitement du signal."
+  },
+  {
+    short: "Un jeu de culture de champignons avec des spores",
+    long: "Un jeu de culture de champignons avec des spores. Les champignons se propagent par spores et colonisent de nouveaux territoires. L'humidité et la température affectent la croissance. Différentes espèces de champignons entrent en compétition. L'objectif est de cultiver une espèce spécifique en optimisant les conditions environnementales."
+  },
+  {
+    short: "Un jeu de simulation de vol d'oiseaux avec des formations",
+    long: "Un jeu de simulation de vol d'oiseaux avec des formations. Le joueur contrôle un vol d'oiseaux qui suivent des règles de formation. Les oiseaux évitent les collisions et restent groupés. Des prédateurs perturbent la formation. L'objectif est de guider le vol vers sa destination en maintenant la cohésion du groupe."
+  },
+  {
+    short: "Un jeu de fabrication de tissus avec des motifs",
+    long: "Un jeu de fabrication de tissus avec des motifs. Le joueur programme un métier à tisser pour créer des patterns complexes. Les fils de chaîne et de trame s'entrelacent selon des règles précises. Des erreurs dans la programmation créent des défauts dans le tissu. L'objectif est de reproduire des motifs traditionnels en programmant correctement la machine."
+  },
+  {
+    short: "Un jeu de simulation de termites avec des phéromones",
+    long: "Un jeu de simulation de termites avec des phéromones. Les termites construisent des structures complexes en suivant des traces chimiques. Les phéromones guident la construction et la réparation. Le joueur peut influencer indirectement le comportement en plaçant des sources de phéromones. L'objectif est de construire des structures optimales pour la colonie."
+  },
+  {
+    short: "Un jeu de création de langages avec des grammaires",
+    long: "Un jeu de création de langages avec des grammaires. Le joueur définit des règles grammaticales pour générer des phrases. Les règles s'appliquent récursivement pour créer des structures complexes. Des contraintes sémantiques assurent la cohérence du langage. L'objectif est de créer un langage expressif et cohérent qui peut décrire des concepts complexes."
+  },
+  {
+    short: "Un jeu de simulation de coraux avec des symbioses",
+    long: "Un jeu de simulation de coraux avec des symbioses. Les coraux hébergent des algues qui leur fournissent de la nourriture. L'équilibre symbiotique est fragile et peut être perturbé. La température et l'acidité de l'eau affectent la santé des coraux. L'objectif est de maintenir un récif corallien en bonne santé malgré les changements environnementaux."
+  },
+  {
+    short: "Un jeu de programmation de drones avec des essaims",
+    long: "Un jeu de programmation de drones avec des essaims. Le joueur programme des comportements collectifs pour des groupes de drones. Les drones communiquent entre eux pour coordonner leurs actions. Des missions complexes nécessitent une coordination précise. L'objectif est de programmer des essaims efficaces qui accomplissent des tâches collaboratives."
+  },
+  {
+    short: "Un jeu de simulation de galaxie avec des étoiles qui naissent et meurent",
+    long: "Un jeu de simulation de galaxie avec des étoiles qui naissent et meurent. Les étoiles évoluent selon leur masse et leur âge. Les supernovas enrichissent l'espace en éléments lourds. De nouvelles étoiles naissent dans les nébuleuses. L'objectif est de comprendre et d'influencer l'évolution stellaire pour créer des systèmes planétaires habitables."
+  },
+  {
+    short: "Un jeu de culture de cristaux avec des défauts structurels",
+    long: "Un jeu de culture de cristaux avec des défauts structurels. Les cristaux grandissent selon des règles géométriques strictes. Des impuretés créent des défauts dans la structure. Les défauts peuvent améliorer ou détériorer les propriétés du cristal. L'objectif est de contrôler la croissance pour obtenir des cristaux avec des propriétés spécifiques."
+  },
+  {
+    short: "Un jeu de simulation de ruche avec des danses d'abeilles",
+    long: "Un jeu de simulation de ruche avec des danses d'abeilles. Les abeilles communiquent par des danses pour indiquer la location des fleurs. Le joueur doit décoder les danses pour optimiser la collecte de nectar. Différentes danses transmettent différents types d'information. L'objectif est de maximiser la production de miel en comprenant la communication des abeilles."
+  },
+  {
+    short: "Un jeu de manipulation de l'espace-temps avec des distorsions",
+    long: "Un jeu de manipulation de l'espace-temps avec des distorsions. Le joueur crée des distorsions qui modifient la géométrie de l'espace. Les objets suivent des trajectoires courbées dans l'espace déformé. Les distorsions peuvent créer des raccourcis ou des pièges. L'objectif est d'utiliser les distorsions pour résoudre des puzzles spatio-temporels."
+  },
+  {
+    short: "Un jeu de simulation de mycorhizes avec des réseaux fongiques",
+    long: "Un jeu de simulation de mycorhizes avec des réseaux fongiques. Les champignons forment des réseaux souterrains qui connectent les plantes. Les nutriments et l'information circulent à travers ces réseaux. Le joueur peut influencer les connections pour optimiser l'écosystème. L'objectif est de créer un réseau fongique qui soutient la diversité végétale."
+  },
+  {
+    short: "Un jeu de création de patterns sonores avec des ondes",
+    long: "Un jeu de création de patterns sonores avec des ondes. Le joueur manipule des ondes sonores pour créer des harmonies complexes. Les ondes interfèrent et créent des battements et des résonances. La visualisation des ondes aide à comprendre les interactions. L'objectif est de composer de la musique en manipulant directement les propriétés physiques du son."
+  },
+  {
+    short: "Un jeu de simulation de migration avec des animaux nomades",
+    long: "Un jeu de simulation de migration avec des animaux nomades. Les animaux suivent des routes migratoires ancestrales. Les changements climatiques perturbent les patterns traditionnels. Le joueur peut créer des corridors pour faciliter la migration. L'objectif est de maintenir les populations animales en adaptant les routes migratoires."
+  },
+  {
+    short: "Un jeu de construction de réseaux sociaux avec des connections",
+    long: "Un jeu de construction de réseaux sociaux avec des connections. Le joueur crée des liens entre individus pour former des communautés. Les connections influencent la propagation d'informations et d'influences. Des algorithmes déterminent la force des liens sociaux. L'objectif est de créer des réseaux sociaux cohésifs qui résistent aux divisions."
+  },
+  {
+    short: "Un jeu de simulation de photosynthèse avec des chloroplastes",
+    long: "Un jeu de simulation de photosynthèse avec des chloroplastes. Le joueur optimise l'arrangement des chloroplastes pour maximiser la capture de lumière. Les photons sont convertis en énergie chimique dans des réactions complexes. L'efficacité dépend de la coordination entre les différents composants. L'objectif est de créer un système photosynthétique optimal."
+  },
+  {
+    short: "Un jeu de programmation de comportements avec des robots sociaux",
+    long: "Un jeu de programmation de comportements avec des robots sociaux. Les robots interagissent et apprennent les uns des autres. Les comportements sociaux émergent de règles d'interaction simples. Le joueur peut programmer des personnalités et des rôles sociaux. L'objectif est de créer une société robotique harmonieuse qui accomplit des tâches collectives."
+  },
+  {
+    short: "Un jeu de simulation de pollution avec des cycles naturels",
+    long: "Un jeu de simulation de pollution avec des cycles naturels. Les polluants se dispersent et s'accumulent dans l'environnement. Les cycles naturels décomposent certains polluants mais pas d'autres. Les écosystèmes réagissent différemment selon le type de pollution. L'objectif est de gérer les sources de pollution pour maintenir l'équilibre écologique."
+  },
+  {
+    short: "Un jeu de création de langages de programmation avec des compilateurs",
+    long: "Un jeu de création de langages de programmation avec des compilateurs. Le joueur définit la syntaxe et la sémantique d'un nouveau langage. Le compilateur traduit le code en instructions exécutables. Des erreurs de conception créent des bugs difficiles à résoudre. L'objectif est de créer un langage expressif et sans ambiguïté qui peut être compilé efficacement."
+  },
+  {
+    short: "Un jeu de simulation de vieillissement avec des télomères",
+    long: "Un jeu de simulation de vieillissement avec des télomères. Les cellules vieillissent et perdent leur capacité de division. Les télomères raccourcissent à chaque division cellulaire. Le joueur peut influencer les mécanismes de réparation. L'objectif est de comprendre et ralentir le processus de vieillissement cellulaire."
+  },
+  {
+    short: "Un jeu de construction de ponts quantiques avec des particules",
+    long: "Un jeu de construction de ponts quantiques avec des particules. Les particules peuvent être intriquées et partager des propriétés. L'intrication permet de créer des connections instantanées. La mesure d'une particule affecte instantanément son partenaire. L'objectif est de construire des réseaux quantiques pour transmettre de l'information."
+  },
+  {
+    short: "Un jeu de simulation de conscience avec des neurones artificiels",
+    long: "Un jeu de simulation de conscience avec des neurones artificiels. Le joueur construit des réseaux de neurones qui traitent l'information. La conscience émerge de l'interaction entre différents modules. L'auto-réflexion et la métacognition sont des propriétés émergentes. L'objectif est de créer un système qui manifeste des signes de conscience artificielle."
+  },
+  {
+    short: "Un jeu de culture de virus avec des mutations adaptatives",
+    long: "Un jeu de culture de virus avec des mutations adaptatives. Les virus mutent pour s'adapter à leur environnement. Les mutations peuvent améliorer ou détériorer la fitness. Le système immunitaire de l'hôte crée une pression sélective. L'objectif est de comprendre l'évolution virale et prédire les nouvelles variantes."
+  },
+  {
+    short: "Un jeu de programmation de matière avec des atomes",
+    long: "Un jeu de programmation de matière avec des atomes. Le joueur assemble des atomes pour créer des matériaux avec des propriétés spécifiques. Les liaisons chimiques déterminent la structure et les propriétés. Des arrangements différents créent des matériaux aux propriétés radicalement différentes. L'objectif est de concevoir des matériaux révolutionnaires en manipulant la structure atomique."
+  },
+  {
+    short: "Un jeu de simulation de trous noirs avec des horizons d'événements",
+    long: "Un jeu de simulation de trous noirs avec des horizons d'événements. Les objets sont déformés par la gravité extrême. Le temps ralentit près de l'horizon d'événements. Les particules virtuelles près du trou noir créent le rayonnement de Hawking. L'objectif est de comprendre la physique extrême des trous noirs et leurs effets sur l'espace-temps."
+  },
+  {
+    short: "Un jeu de construction de réalités alternatives avec des dimensions",
+    long: "Un jeu de construction de réalités alternatives avec des dimensions. Le joueur modifie les lois physiques pour créer des univers alternatifs. Les changements dans les constantes fondamentales affectent toute la réalité. Certains univers sont stables, d'autres s'effondrent rapidement. L'objectif est de créer des réalités alternatives viables avec des propriétés intéressantes."
+  },
+  {
+    short: "Un jeu de simulation de l'évolution de la vie avec des mutations",
+    long: "Un jeu de simulation de l'évolution de la vie avec des mutations. Les organismes évoluent selon les pressions sélectives de l'environnement. Les mutations introduisent de la variabilité génétique. Les extinctions de masse redistribuent les niches écologiques. L'objectif est de guider l'évolution vers des formes de vie complexes et diversifiées."
+  },
+  {
+    short: "Un jeu de programmation de l'univers avec des règles cosmiques",
+    long: "Un jeu de programmation de l'univers avec des règles cosmiques. Le joueur définit les lois physiques qui gouvernent un univers simulé. Les galaxies se forment et évoluent selon ces lois. Les étoiles naissent, vivent et meurent dans un cycle cosmique. L'objectif est de créer un univers stable qui peut soutenir le développement de la complexité et de la vie."
   }
 ];
 
