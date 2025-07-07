@@ -23,6 +23,9 @@ function createTagHandlers(
   setSuggestions: (suggestions: string[]) => void,
   getFileContent: (name: string) => string,
 ): TagHandlers {
+  // Cache to store original file content before edits
+  const originalContentCache = new Map<string, string>();
+
   return {
     Thinking: {
       onOpen: (isComplete: boolean) => {
@@ -73,7 +76,14 @@ function createTagHandlers(
       },
     },
     EditFile: {
-      onOpen: () => '',
+      onOpen: (isComplete: boolean, attributes: Record<string, string>) => {
+        const name = attributes.name;
+        if (name !== undefined && !isComplete) {
+          // Cache the original content before any modifications
+          originalContentCache.set(name, getFileContent(name));
+        }
+        return '';
+      },
       onClose: (content: string, attributes: Record<string, string>) => {
         const name = attributes.name;
 
@@ -87,7 +97,9 @@ function createTagHandlers(
             codeEndIndex > codeStartIndex
           ) {
             const newContent = content.slice(codeStartIndex + 7, codeEndIndex); // +7 for "```lua\n"
-            const oldContent = getFileContent(name);
+            // Use cached original content if available, otherwise get current content
+            const oldContent =
+              originalContentCache.get(name) ?? getFileContent(name);
 
             // Generate diff for display
             const diff = createPatch(name, oldContent, newContent)
@@ -102,7 +114,10 @@ function createTagHandlers(
 
         return '';
       },
-      onComplete: (content: string, attributes: Record<string, string>) => {
+      onComplete: async (
+        content: string,
+        attributes: Record<string, string>,
+      ) => {
         const name = attributes.name;
         if (name !== undefined) {
           const codeStartIndex = content.indexOf('```lua');
@@ -115,7 +130,9 @@ function createTagHandlers(
           ) {
             const newContent = content.slice(codeStartIndex + 7, codeEndIndex); // +7 for "```lua\n"
             // Apply the file change
-            editFile(name, newContent);
+            await editFile(name, newContent);
+            // Clean up cache after edit is complete
+            originalContentCache.delete(name);
           }
         }
       },
@@ -171,6 +188,8 @@ export default function Chat({ className, chatId, title }: Props) {
         };
 
         await createMessage(requestBody);
+
+        setMessages([...messages.slice(0, -1), message]);
       }
     },
   });
@@ -252,6 +271,7 @@ export default function Chat({ className, chatId, title }: Props) {
   const messagesRef = useRef<HTMLDivElement>(null);
   const lastMessageHeight = useMemo(() => {
     return messagesRef.current?.lastElementChild?.clientHeight ?? 0;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
   useEffect(() => {
     if (messagesRef.current !== null) {
