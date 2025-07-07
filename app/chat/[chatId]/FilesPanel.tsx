@@ -64,9 +64,9 @@ export default function FilesPanel({ chatId, onClose }: Props) {
   }, [file, viewMode]);
 
   return (
-    <div className="terminal-sidebar files-panel h-full w-full lg:w-96">
+    <div className="terminal-sidebar files-panel flex h-full w-full flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-emerald-600/50 bg-slate-100/50 p-4 dark:border-emerald-500/50 dark:bg-gray-900/50">
+      <div className="flex flex-shrink-0 items-center justify-between border-b border-emerald-600/50 bg-slate-100/50 p-4 dark:border-emerald-500/50 dark:bg-gray-900/50">
         <div className="flex items-center space-x-2">
           {viewMode === 'file' && (
             <button
@@ -91,10 +91,10 @@ export default function FilesPanel({ chatId, onClose }: Props) {
         </button>
       </div>
 
-      {/* Content */}
-      <div className="h-full overflow-hidden bg-slate-100/20 pb-16 dark:bg-gray-900/20">
+      {/* Content - flex-1 to fill remaining space */}
+      <div className="flex flex-1 flex-col overflow-hidden bg-slate-100/20 dark:bg-gray-900/20">
         {viewMode === 'list' ? (
-          <div className="p-4">
+          <div className="flex-1 overflow-y-auto p-4">
             {filesLoading ? (
               <div className="flex items-center justify-center py-8">
                 <div className="animate-pulse text-emerald-600 dark:text-emerald-400">
@@ -135,37 +135,37 @@ export default function FilesPanel({ chatId, onClose }: Props) {
             )}
           </div>
         ) : (
-          <div className="flex h-full flex-col">
+          <div className="flex flex-1 flex-col overflow-hidden">
             {/* File content */}
-            <div className="flex-1 overflow-auto">
-              {fileLoading || isHighlighting ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="animate-pulse text-emerald-600 dark:text-emerald-400">
-                    {fileLoading
-                      ? 'Chargement du fichier...'
-                      : 'Coloration syntaxique...'}
-                  </div>
+            {fileLoading || isHighlighting ? (
+              <div className="flex flex-1 items-center justify-center">
+                <div className="animate-pulse text-emerald-600 dark:text-emerald-400">
+                  {fileLoading
+                    ? 'Chargement du fichier...'
+                    : 'Coloration syntaxique...'}
                 </div>
-              ) : file !== undefined ? (
-                <div className="p-4">
-                  {highlightedContent !== '' ? (
-                    <div
-                      className="overflow-auto font-mono text-sm"
-                      dangerouslySetInnerHTML={{ __html: highlightedContent }}
-                    />
-                  ) : (
-                    <pre className="overflow-auto p-2 font-mono text-sm break-words whitespace-pre-wrap text-gray-800 dark:text-gray-200">
-                      {file.content}
-                    </pre>
-                  )}
-                </div>
-              ) : (
-                <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+              </div>
+            ) : file !== undefined ? (
+              <div className="flex-1 overflow-y-auto p-4">
+                {highlightedContent !== '' ? (
+                  <div
+                    className="font-mono text-sm"
+                    dangerouslySetInnerHTML={{ __html: highlightedContent }}
+                  />
+                ) : (
+                  <pre className="break-words whitespace-pre-wrap font-mono text-sm text-gray-800 dark:text-gray-200">
+                    {file.content}
+                  </pre>
+                )}
+              </div>
+            ) : (
+              <div className="flex flex-1 items-center justify-center text-gray-500 dark:text-gray-400">
+                <div className="text-center">
                   <FileIcon className="mx-auto mb-4 h-12 w-12 opacity-50" />
                   <p>Fichier non trouvé</p>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
       </div>

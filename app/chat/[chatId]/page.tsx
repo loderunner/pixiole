@@ -95,7 +95,7 @@ export default function ChatPage() {
 
         {/* Files Panel Container */}
         {isFilesPanelOpen && (
-          <div className="fixed top-0 right-0 z-20 h-full w-full lg:relative lg:w-96">
+          <div className="fixed top-0 right-0 z-20 h-full w-full lg:relative lg:w-[28rem]">
             <FilesPanel
               chatId={chatId}
               onClose={() => setIsFilesPanelOpen(false)}
