@@ -1,4 +1,8 @@
-import { createHighlighterCore, createOnigurumaEngine } from 'shiki';
+import {
+  HighlighterCore,
+  createHighlighterCore,
+  createOnigurumaEngine,
+} from 'shiki';
 
 // Custom terminal theme that matches our emerald color scheme - Dark Mode
 const pixioleTerminalTheme = {
@@ -289,13 +293,15 @@ async function getLanguageLoader(lang: string) {
   }
 }
 
+const languages = new Set<string>(['lua']);
+
 /**
  * Create syntax highlighter with pixiole themes
  */
-async function createPixioleHighlighter(languages: string[] = ['lua']) {
+async function createPixioleHighlighter() {
   // Load language bundles dynamically
   const languageLoaders = await Promise.all(
-    languages.map((lang) => getLanguageLoader(lang)),
+    [...languages].map((lang) => getLanguageLoader(lang)),
   );
 
   return createHighlighterCore({
@@ -305,9 +311,7 @@ async function createPixioleHighlighter(languages: string[] = ['lua']) {
   });
 }
 
-let highlighterInstance: Awaited<
-  ReturnType<typeof createPixioleHighlighter>
-> | null = null;
+let highlighterInstance: HighlighterCore | null = null;
 
 /**
  * Highlight code with syntax highlighting using pixiole themes
@@ -318,30 +322,17 @@ export async function highlightCode(
   isDark: boolean = true,
 ): Promise<string> {
   const language = getLanguageFromFilename(filename);
-
-  // Create or reuse highlighter instance
-  if (highlighterInstance === null) {
-    highlighterInstance = await createPixioleHighlighter([language]);
+  if (highlighterInstance === null || !languages.has(language)) {
+    languages.add(language);
+    highlighterInstance = await createPixioleHighlighter();
   }
 
-  // Check if we need to load a new language
-  try {
-    const theme = isDark ? 'pixiole-terminal' : 'pixiole-light';
+  const theme = isDark ? 'pixiole-terminal' : 'pixiole-light';
 
-    return highlighterInstance.codeToHtml(code, {
-      lang: language,
-      theme,
-    });
-  } catch (_error) {
-    // If language isn't loaded, reload highlighter with new language
-    highlighterInstance = await createPixioleHighlighter([language]);
-    const theme = isDark ? 'pixiole-terminal' : 'pixiole-light';
-
-    return highlighterInstance.codeToHtml(code, {
-      lang: language,
-      theme,
-    });
-  }
+  return highlighterInstance.codeToHtml(code, {
+    lang: language,
+    theme,
+  });
 }
 
 /**

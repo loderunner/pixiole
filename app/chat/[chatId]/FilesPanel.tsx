@@ -53,7 +53,9 @@ export default function FilesPanel({ chatId, onClose }: Props) {
           setHighlightedContent(highlighted);
         } catch (_error) {
           // Fallback to plain text
-          setHighlightedContent(`<pre><code>${file.content}</code></pre>`);
+          setHighlightedContent(
+            `<pre class="shiki"><code>${file.content}</code></pre>`,
+          );
         } finally {
           setIsHighlighting(false);
         }
@@ -137,7 +139,7 @@ export default function FilesPanel({ chatId, onClose }: Props) {
         ) : (
           <div className="flex h-full flex-col">
             {/* File content */}
-            <div className="flex-1 overflow-auto">
+            <div className="flex-1 overflow-auto pb-4">
               {fileLoading || isHighlighting ? (
                 <div className="flex items-center justify-center py-8">
                   <div className="animate-pulse text-emerald-600 dark:text-emerald-400">

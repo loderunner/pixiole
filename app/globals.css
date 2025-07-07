@@ -421,11 +421,13 @@ html:not(.dark) .terminal-sidebar.files-panel {
     }
   }
 
-  .shiki.has-diff {
-    background: rgba(17, 17, 17, 0.9) !important;
+  .shiki {
+    background: rgba(17, 17, 17, 0.9);
     border: 1px solid #22dd77;
     border-radius: 8px;
     box-shadow: 0 0 10px #22dd7730;
+
+    @apply min-w-0 overflow-x-auto;
 
     .line.diff.remove {
       @apply bg-red-500/40;
@@ -437,34 +439,19 @@ html:not(.dark) .terminal-sidebar.files-panel {
   }
 
   /* Code blocks light mode */
-  html:not(.dark) .shiki.has-diff {
-    background: rgba(248, 249, 250, 0.9) !important;
+  html:not(.dark) .shiki {
+    background: rgba(248, 249, 250, 0.9);
     border: 1px solid #2d7d32;
     box-shadow: 0 0 10px #2d7d3230;
   }
 
   /* Regular code blocks styling - Dark Mode */
   .shiki:not(.has-diff) {
-    background: rgba(17, 17, 17, 0.9) !important;
-    border: 1px solid #22dd77;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #22dd7730;
     padding: 16px;
   }
 
-  /* Regular code blocks styling - Light Mode */
-  html:not(.dark) .shiki:not(.has-diff) {
-    background: rgba(248, 249, 250, 0.9) !important;
-    border: 1px solid #2d7d32;
-    box-shadow: 0 0 10px #2d7d3230;
-  }
-
   /* Ensure all code lines have consistent background */
-  .shiki .line {
-    background: transparent;
-  }
-
-  /* Code block container consistency */
+  .shiki .line,
   .shiki code {
     background: transparent;
   }
@@ -481,43 +468,14 @@ html:not(.dark) .terminal-sidebar.files-panel {
 
   /* Files panel syntax highlighting - Dark Mode */
   .files-panel .shiki {
-    background: rgba(17, 17, 17, 0.9) !important;
-    border: 1px solid #22dd77;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #22dd7730;
     padding: 16px;
     margin: 0;
   }
 
-  /* Files panel syntax highlighting - Light Mode */
-  html:not(.dark) .files-panel .shiki {
-    background: rgba(248, 249, 250, 0.9) !important;
-    border: 1px solid #2d7d32;
-    box-shadow: 0 0 10px #2d7d3230;
-  }
-
   /* Files panel code styling consistency */
-  .files-panel .shiki .line {
-    background: transparent;
-  }
-
+  .files-panel .shiki .line,
   .files-panel .shiki code {
     background: transparent;
-  }
-
-  /* Files panel pre element styling - Dark Mode */
-  .files-panel pre {
-    background: rgba(17, 17, 17, 0.8);
-    border: 1px solid #22dd77;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #22dd7730;
-  }
-
-  /* Files panel pre element styling - Light Mode */
-  html:not(.dark) .files-panel pre {
-    background: rgba(248, 249, 250, 0.8);
-    border: 1px solid #2d7d32;
-    box-shadow: 0 0 10px #2d7d3230;
   }
 }
 
