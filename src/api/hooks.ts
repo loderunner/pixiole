@@ -343,3 +343,39 @@ export function useFileUpdater(chatId: string) {
     error,
   };
 }
+
+/**
+ * Hook to delete messages after a specific message ID using SWR mutation
+ */
+export function useDeleteMessagesAfter(chatId: string) {
+  const { mutate } = useSWRConfig();
+  const { trigger, isMutating, error } = useSWRMutation(
+    `/api/chats/${chatId}/messages`,
+    async (url, { arg }: { arg: { afterMessageId: string } }) => {
+      const response = await fetch(
+        `${url}?afterMessageId=${encodeURIComponent(arg.afterMessageId)}`,
+        {
+          method: 'DELETE',
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to delete messages');
+      }
+
+      return null;
+    },
+    {
+      onSuccess: () => {
+        mutate(`/api/chats/${chatId}/messages`);
+        mutate(`/api/chats/${chatId}`);
+      },
+    },
+  );
+
+  return {
+    deleteMessagesAfter: trigger,
+    isDeleting: isMutating,
+    error,
+  };
+}

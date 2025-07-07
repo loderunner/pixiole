@@ -1,7 +1,7 @@
 'use client';
 
 import { Message } from '@ai-sdk/react';
-import { RobotIcon, StudentIcon } from '@phosphor-icons/react';
+import { ArrowClockwise, RobotIcon, StudentIcon } from '@phosphor-icons/react';
 import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
 import { transformerNotationDiff } from '@shikijs/transformers';
 import { Ref, useMemo } from 'react';
@@ -13,7 +13,13 @@ import { PropsWithClassName } from '@/src/PropsWithClassName';
 import { rehypeDiffPlugin } from '@/src/rehype-diff-plugin';
 import { isDarkMode } from '@/src/syntax-highlighter';
 
-function UserMessage({ message }: { message: Message }) {
+function UserMessage({ 
+  message, 
+  onResend 
+}: { 
+  message: Message; 
+  onResend?: (messageId: string) => void;
+}) {
   return (
     <div className="mb-6 flex flex-row items-start gap-4">
       <div className="flex-shrink-0 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-3 shadow-lg">
@@ -26,6 +32,18 @@ function UserMessage({ message }: { message: Message }) {
         <div className="leading-relaxed text-blue-900 dark:text-blue-100">
           {message.content}
         </div>
+        {onResend && (
+          <div className="mt-3 flex justify-end">
+            <button
+              onClick={() => onResend(message.id)}
+              className="flex items-center gap-1 rounded-md bg-blue-500 px-3 py-1 text-xs text-white transition-colors hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+              title="Renvoyer ce message"
+            >
+              <ArrowClockwise className="text-sm" />
+              Renvoyer
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -264,19 +282,20 @@ function AssistantMessage({ message }: { message: Message }) {
 
 type Props = PropsWithClassName<{
   messages: Message[];
+  onResend?: (messageId: string) => void;
   ref?: Ref<HTMLDivElement>;
 }>;
 
-export default function ChatMessages({ className, messages, ref }: Props) {
+export default function ChatMessages({ className, messages, onResend, ref }: Props) {
   const messageElements = useMemo(() => {
     return messages.map((m) =>
       m.role === 'user' ? (
-        <UserMessage key={m.id} message={m} />
+        <UserMessage key={m.id} message={m} onResend={onResend} />
       ) : (
         <AssistantMessage key={m.id} message={m} />
       ),
     );
-  }, [messages]);
+  }, [messages, onResend]);
 
   return (
     <div className={className} ref={ref}>

@@ -7,7 +7,7 @@ import ChatMessages from './ChatMessages';
 
 import type { CreateMessageRequest } from '@/app/api/chats/[chatId]/messages/types';
 import { PropsWithClassName } from '@/src/PropsWithClassName';
-import { useChatMessages, useCreateMessage } from '@/src/api/hooks';
+import { useChatMessages, useCreateMessage, useDeleteMessagesAfter } from '@/src/api/hooks';
 import ChatArea from '@/src/components/ChatArea';
 import { useProject } from '@/src/project';
 import { TagHandlers, useStreamChat } from '@/src/useStreamChat';
@@ -143,6 +143,7 @@ function createTagHandlers(
 export default function Chat({ className, chatId, title }: Props) {
   const { createFile, editFile, project } = useProject();
   const { createMessage } = useCreateMessage(chatId);
+  const { deleteMessagesAfter } = useDeleteMessagesAfter(chatId);
   const {
     messages: apiMessages,
     isLoading: messagesLoading,
@@ -193,6 +194,32 @@ export default function Chat({ className, chatId, title }: Props) {
       }
     },
   });
+
+  // Handle resending a message
+  const handleResend = useCallback(
+    async (messageId: string) => {
+      // Find the message index
+      const messageIndex = messages.findIndex((m) => m.id === messageId);
+      if (messageIndex === -1) return;
+
+      // Delete messages after this one from the database
+      await deleteMessagesAfter({ afterMessageId: messageId });
+
+      // Update local state: keep messages up to and including the target message
+      const truncatedMessages = messages.slice(0, messageIndex + 1);
+      setMessages(truncatedMessages);
+
+      // Clear input and suggestions
+      setInput('');
+      setSuggestions([]);
+
+      // Restart the conversation from this point
+      setTimeout(() => {
+        reload();
+      }, 100);
+    },
+    [messages, deleteMessagesAfter, setMessages, setInput, setSuggestions, reload],
+  );
 
   // Handle suggestion click
   const handleSuggestionClick = (suggestion: string) => {
@@ -307,6 +334,7 @@ export default function Chat({ className, chatId, title }: Props) {
         <ChatMessages
           className="h-full overflow-auto pr-2"
           messages={messages}
+          onResend={handleResend}
           ref={messagesRef}
         />
       </div>
